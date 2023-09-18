@@ -26,6 +26,10 @@ class MoneyManager: ObservableObject {
         categoryBalances["Restaurant"] = 0.0
         categoryBalances["Sports"] = 0.0
         // Add more categories as needed
+        
+        // Load transactions from UserDefaults when initializing the manager
+        loadAllTransactions()
+        loadDebts()
     }
     
     func addMoney(_ amount: Double, to category: String) {
@@ -55,10 +59,12 @@ class MoneyManager: ObservableObject {
     
     func addTransaction(_ transaction: Transaction) {
         transactions.append(transaction)
+        saveAllTransactions()
     }
     
     func removeTransaction(at Index: Int) {
         transactions.remove(at: Index)
+        saveAllTransactions()
     }
     
     func updateSelectedMonthBalance(transactions: [Transaction]) {
@@ -84,6 +90,7 @@ class MoneyManager: ObservableObject {
     
     func addDebt(_ debt: Transaction) {
         debts.append(debt)
+        saveDebts()
     }
     
     func deleteDebt(_ debt: Transaction, _ selectedMonth: Int, _ selectedYear: Int) {
@@ -94,10 +101,37 @@ class MoneyManager: ObservableObject {
         updateFilteredTransactions(selectedMonth: selectedMonth, selectedYear: selectedYear)
         updateSelectedMonthBalance(transactions: filteredTransactions)
         updateCategoryBalancesForMonth()
+        saveDebts()
+    }
+    
+    private func loadAllTransactions() {
+        if let savedTransactionsData = UserDefaults.standard.data(forKey: "transactions"),
+           let savedTransactions = try? JSONDecoder().decode([Transaction].self, from: savedTransactionsData) {
+            transactions = savedTransactions
+        }
+    }
+    
+    private func saveAllTransactions() {
+        if let encodedTransactions = try? JSONEncoder().encode(transactions) {
+            UserDefaults.standard.set(encodedTransactions, forKey: "transactions")
+        }
+    }
+    
+    private func loadDebts() {
+        if let savedDebtData = UserDefaults.standard.data(forKey: "debts"),
+           let savedDebts = try? JSONDecoder().decode([Transaction].self, from: savedDebtData) {
+            filteredTransactions = savedDebts
+        }
+    }
+    
+    private func saveDebts() {
+        if let encodedDebts = try? JSONEncoder().encode(debts) {
+            UserDefaults.standard.set(encodedDebts, forKey: "debts")
+        }
     }
 }
 
-struct Transaction: Hashable, Identifiable {
+struct Transaction: Hashable, Identifiable, Codable {
     let id = UUID()
     let amount: Double
     let date: Date

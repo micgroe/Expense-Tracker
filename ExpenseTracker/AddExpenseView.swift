@@ -36,7 +36,7 @@ struct AddExpenseView: View {
         ZStack {
             Form {
                 TextField("Enter Amount", text: $amount)
-                    .keyboardType(.numberPad)
+                    .keyboardType(.decimalPad)
                 TextField("Description", text: $description)
                 Toggle(isPaidSelected ? "Paid" : "Debt", isOn: $isPaidSelected)
                 DatePicker("Date of Expense", selection: $date, displayedComponents: .date)

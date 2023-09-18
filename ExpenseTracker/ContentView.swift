@@ -36,96 +36,108 @@ struct ContentView: View {
                 ZStack {
                     VStack {
                         HStack {
-                            ZStack {
-                                Rectangle()
-                                    .fill(secondaryColor)
-                                    .frame(width: 190, height:190)
-                                    .cornerRadius(rectCornerRadius)
-                                VStack() {
-                                    HStack{
-                                        Text("Money spent")
-                                            .font(.system(size: headlineSize, weight: .bold))
-                                            .padding(.top, 15)
-                                            .padding(.leading, 15)
-                                        Spacer()
-                                    }
-
-                                    
-                                    Text("\(moneyManager.filteredSum, specifier: "%.2f")")
-                                        .foregroundColor(.red)
-                                        .font(.system(size: 35))
-                                    Spacer()
-                                }
-                            }.padding(.leading)
-                            Spacer()
-                            ZStack {
-                                Rectangle()
-                                    .fill(secondaryColor)
-                                    .frame(width: 190, height: 190)
-                                    .cornerRadius(rectCornerRadius)
-                                VStack(alignment: .leading) {
-                                    HStack{
-                                        Text("Top Categories")
-                                            .font(.system(size: headlineSize, weight: .bold))
-                                            .padding(.top, 15)
-                                            .padding(.leading, 15)
-                                        Spacer()
-                                    }
-                                    ForEach(Array(moneyManager.filteredCategoryBalances.prefix(5)), id: \.key) { (key, value) in
-                                        HStack {
-                                            Text(key)
-                                            Text("\(value, specifier: "%.2f") EUR")
+                            Rectangle()
+                                .fill(secondaryColor)
+                                .frame(width: 190, height:190)
+                                .cornerRadius(rectCornerRadius)
+                                .overlay(
+                                    VStack(alignment: .leading) {
+                                        HStack{
+                                            Spacer()
+                                            Text("Money spent")
+                                                .font(.system(size: headlineSize, weight: .bold))
+                                                .padding(.top, 15)
+                                            Spacer()
                                         }
+                                        Spacer()
+                                        HStack {
+                                            Spacer()
+                                            Text("\(moneyManager.filteredSum, specifier: "%.2f")")
+                                                .foregroundColor(.red)
+                                                .font(.system(size: 35))
+                                            Spacer()
+                                        }
+                                        Spacer()
                                     }
-                                    Spacer()
-                                }
-                            }
-                        }.padding(.trailing)
-                        ZStack {
+                                )
+                            Spacer()
+                            Rectangle()
+                                .fill(secondaryColor)
+                                .frame(width: 190, height: 190)
+                                .cornerRadius(rectCornerRadius)
+                                .overlay(
+                                    VStack(alignment: .leading) {
+                                        HStack{
+                                            Spacer()
+                                            Text("Top Categories")
+                                                .font(.system(size: headlineSize, weight: .bold))
+                                                .padding(.top, 15)
+                                            Spacer()
+                                        }
+                                        ForEach(Array(moneyManager.filteredCategoryBalances.prefix(5)), id: \.key) { (key, value) in
+                                            HStack {
+                                                Text(key)
+                                                    .padding(.leading)
+                                                Spacer()
+                                                Text("\(value, specifier: "%.2f") EUR")
+                                                    .padding(.trailing)
+                                            }
+                                        }
+                                        Spacer()
+                                    }
+                                )
+                        }.padding(.horizontal)
+                        HStack {
                             Rectangle()
                                 .fill(secondaryColor)
                                 .frame(width: 300, height: 190)
                                 .cornerRadius(rectCornerRadius)
-                            VStack(alignment: .leading) {
-                                HStack{
-                                    Text("Debts")
-                                        .font(.system(size: headlineSize, weight: .bold))
-                                        .padding(.top, 15)
-                                        .padding(.leading, 15)
-                                    Spacer()
-                                }
-                                if moneyManager.debts.isEmpty {
-                                    VStack {
-                                        Spacer()
-                                        HStack {
+                                .overlay(
+                                    VStack(alignment: .leading) {
+                                        HStack{
+                                            Text("Debts")
+                                                .font(.system(size: headlineSize, weight: .bold))
+                                                .padding(.top, 15)
+                                                .padding(.leading, 15)
                                             Spacer()
-                                            Text("All debts paid!")
-                                                .font(.system(size: 20))
-                                            Spacer()
+                                        }
+                                        if moneyManager.debts.isEmpty {
+                                            VStack {
+                                                Spacer()
+                                                HStack {
+                                                    Spacer()
+                                                    Text("All debts paid!")
+                                                        .font(.system(size: 20))
+                                                    Spacer()
+                                                }
+                                                Spacer()
+                                            }
+                                        } else {
+                                            VStack {
+                                                ForEach(moneyManager.debts, id: \.id) { debt in
+                                                    HStack {
+                                                        Text(debt.description)
+                                                            .padding(.leading)
+                                                        Spacer()
+                                                        Text("\(debt.amount, specifier: "%.2f") EUR")
+                                                            .foregroundColor(.red)
+                                                        Button(action: {
+                                                            moneyManager.deleteDebt(debt, dateManager.currentMonth, dateManager.currentYear)
+                                                        }) {
+                                                            Image(systemName: "creditcard.fill")
+                                                        }.padding(.trailing)
+                                                        .padding(.top)
+                                                    }
+                                                    Divider()
+                                                }
+                                                
+                                            }
                                         }
                                         Spacer()
                                     }
-                                } else {
-                                    ScrollView {
-                                        ForEach(Array(moneyManager.debts), id: \.id) { debt in
-                                            HStack {
-                                                Text(debt.description)
-                                                Spacer()
-                                                Text("\(debt.amount, specifier: "%.2f") EUR")
-                                                    .foregroundColor(.red)
-                                                Button(action: {
-                                                    moneyManager.deleteDebt(debt, dateManager.currentMonth, dateManager.currentYear)
-                                                }) {
-                                                    Image(systemName: "creditcard.fill")
-                                                }
-                                           }
-                                        }
-                                    }.padding(.horizontal, 6)
-                                }
-                                Spacer()
-                            }
-                        }.padding(.leading)
-
+                                )
+                            Spacer()
+                            }.padding(.leading)
                         HStack {
                             Text("\(dateManager.getMonthName(month: dateManager.currentMonth))")
                                 .font(.system(size: 30, weight: .bold))
@@ -144,12 +156,19 @@ struct ContentView: View {
                         }.background(backgroundColor)
                         .padding(.top)
                         
-                        List(moneyManager.filteredTransactions, id: \.self) { transaction in
-                            HStack {
+                        List {
+                            ForEach(moneyManager.filteredTransactions, id: \.self) { transaction in
+                                HStack {
                                 Text("\(transaction.date, formatter: dateFormatter)")
                                 Text("\(transaction.description)")
                                 Spacer()
                                 Text("- \(transaction.amount, specifier: "%.2f") EUR").foregroundColor(.red)
+                                }
+                            }.onDelete { indices in
+                                moneyManager.transactions.remove(atOffsets: indices)
+                                moneyManager.filteredTransactions.remove(atOffsets: indices)
+                                moneyManager.updateCategoryBalancesForMonth()
+                                moneyManager.updateSelectedMonthBalance(transactions: filteredTransactions)
                             }
                         }.cornerRadius(25)
                         .padding(.horizontal, 7)
@@ -178,8 +197,14 @@ struct ContentView: View {
                     Image(systemName: "house")
                 }
                 .background(backgroundColor)
+            }.onAppear{
+                moneyManager.updateFilteredTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear)
+                moneyManager.updateCategoryBalancesForMonth()
+                moneyManager.updateSelectedMonthBalance(transactions: filteredTransactions)
             }
-        }.sheet(isPresented: $showingAddSheet, content: {
+        }.navigationBarTitle("Your Title", displayMode: .automatic).foregroundColor(.white) // Add this line
+        .navigationBarHidden(false)
+        .sheet(isPresented: $showingAddSheet, content: {
             NavigationView {
                 AddExpenseView(moneyManager: moneyManager, dateManager: dateManager)
             }
