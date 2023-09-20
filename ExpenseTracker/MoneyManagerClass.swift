@@ -15,6 +15,7 @@ class MoneyManager: ObservableObject {
     @Published var filteredCategoryBalances: [String: Double] = [:]
     
     @Published var debts: [Transaction] = []
+    @Published var debtAmount: Double = 0.0
     
     init() {
         // Initialize the dictionary with default categories and balances
@@ -90,6 +91,7 @@ class MoneyManager: ObservableObject {
     
     func addDebt(_ debt: Transaction) {
         debts.append(debt)
+        updateDebtAmount()
         saveDebts()
     }
     
@@ -97,11 +99,19 @@ class MoneyManager: ObservableObject {
         if let index = debts.firstIndex(of: debt) {
             debts.remove(at: index)
         }
+        updateDebtAmount()
         addTransaction(debt)
         updateFilteredTransactions(selectedMonth: selectedMonth, selectedYear: selectedYear)
         updateSelectedMonthBalance(transactions: filteredTransactions)
         updateCategoryBalancesForMonth()
         saveDebts()
+    }
+    
+    func updateDebtAmount() {
+        debtAmount = 0
+        for debt in debts {
+            debtAmount += debt.amount
+        }
     }
     
     private func loadAllTransactions() {

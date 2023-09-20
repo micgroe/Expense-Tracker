@@ -9,6 +9,10 @@ import SwiftUI
 
 struct AddExpenseView: View {
     
+    private func convertCommaToPeriod(_ input: String) -> String {
+        return input.replacingOccurrences(of: ",", with: ".")
+    }
+    
     let categories = [
         "House": "house.fill",
         "Travel": "airplane",
@@ -22,9 +26,11 @@ struct AddExpenseView: View {
     
     @ObservedObject var moneyManager: MoneyManager
     @ObservedObject var dateManager: DateManager
+    
+    var selectedOption: String?
+    
     @State private var amount = ""
     @State private var description = ""
-    @State private var isPaidSelected = true
     @State private var date = Date()
     
     @State private var selectedItem: String? = nil
@@ -38,8 +44,9 @@ struct AddExpenseView: View {
                 TextField("Enter Amount", text: $amount)
                     .keyboardType(.decimalPad)
                 TextField("Description", text: $description)
-                Toggle(isPaidSelected ? "Paid" : "Debt", isOn: $isPaidSelected)
-                DatePicker("Date of Expense", selection: $date, displayedComponents: .date)
+                if let option = selectedOption {
+                    DatePicker("Date of \(option)", selection: $date, displayedComponents: .date)
+                }
                 Section(header: Text("Category")) {
                     ScrollView {
                         LazyVGrid(columns: Array(repeating: .init(.flexible()), count: itemsPerRow), spacing: 16)  {
@@ -63,26 +70,19 @@ struct AddExpenseView: View {
                 }
             }
             
-        }.navigationTitle("Add Expense")
+        }.navigationTitle("Add \(selectedOption ?? "")")
         .navigationBarItems(
             leading: Button("Cancel") {
             presentationMode.wrappedValue.dismiss()
             },
             trailing: Button("Add") {
-                if let addAmount = Double(amount) {isPaidSelected ? 
+                if let addAmount = Double(convertCommaToPeriod(amount)) {
                     moneyManager.addTransaction(Transaction(
                                                     amount: addAmount,
                                                     date: date,
                                                     category: selectedItem ?? "Other",
                                                     description: description,
-                                                    icon: selectedItemIcon ?? "Other")) :
-                    moneyManager.addDebt(Transaction(
-                                                    amount: addAmount,
-                                                    date: date,
-                                                    category: selectedItem ?? "Other",
-                                                    description: description,
                                                     icon: selectedItemIcon ?? "Other"))
-
                     moneyManager.addMoney(addAmount, to: selectedItem ?? "Other")
                     moneyManager.updateFilteredTransactions(
                         selectedMonth: dateManager.currentMonth,
@@ -103,6 +103,6 @@ struct AddExpenseView: View {
 
 struct AddExpenseView_Previews: PreviewProvider {
     static var previews: some View {
-        AddExpenseView(moneyManager: MoneyManager(), dateManager: DateManager())
+        AddExpenseView(moneyManager: MoneyManager(), dateManager: DateManager(), selectedOption: "Debt")
     }
 }

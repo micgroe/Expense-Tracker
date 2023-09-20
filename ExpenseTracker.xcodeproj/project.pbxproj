@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0607078E2AB67F9F00127E1C /* DateManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0607078D2AB67F9F00127E1C /* DateManagerClass.swift */; };
+		0636FAE52ABA51BD00745795 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0636FAE42ABA51BD00745795 /* Tests.swift */; };
 		0640C2742AAD3E8F0090A525 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0640C2732AAD3E8F0090A525 /* AppDelegate.swift */; };
 		0640C2762AAD3E8F0090A525 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0640C2752AAD3E8F0090A525 /* SceneDelegate.swift */; };
 		0640C2782AAD3E8F0090A525 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0640C2772AAD3E8F0090A525 /* ContentView.swift */; };
@@ -23,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		0607078D2AB67F9F00127E1C /* DateManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManagerClass.swift; sourceTree = "<group>"; };
+		0636FAE42ABA51BD00745795 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		0640C2702AAD3E8F0090A525 /* ExpenseTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExpenseTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0640C2732AAD3E8F0090A525 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0640C2752AAD3E8F0090A525 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -52,6 +54,7 @@
 		0640C2672AAD3E8F0090A525 = {
 			isa = PBXGroup;
 			children = (
+				0636FAE42ABA51BD00745795 /* Tests.swift */,
 				0640C2722AAD3E8F0090A525 /* ExpenseTracker */,
 				0640C2712AAD3E8F0090A525 /* Products */,
 			);
@@ -164,6 +167,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0640C2742AAD3E8F0090A525 /* AppDelegate.swift in Sources */,
+				0636FAE52ABA51BD00745795 /* Tests.swift in Sources */,
 				0607078E2AB67F9F00127E1C /* DateManagerClass.swift in Sources */,
 				0640C28C2AADE90C0090A525 /* PieChartView.swift in Sources */,
 				0640C2762AAD3E8F0090A525 /* SceneDelegate.swift in Sources */,

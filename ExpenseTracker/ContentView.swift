@@ -16,9 +16,6 @@ struct ContentView: View {
     let secondaryColor = Color(.secondarySystemBackground)
     let tertiaryColor = Color(.tertiarySystemBackground)
     
-    let headlineSize: CGFloat = 23
-    let rectCornerRadius: CGFloat = 15
-    
     let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM yyyy" // Customize the date format
@@ -27,8 +24,9 @@ struct ContentView: View {
     
     @State private var showingAddSheet = false
     @State private var showingFilterSheet = false
+    @State private var isShowingOptions = false
     
-    @State private var filteredTransactions: [Transaction] = []
+    @State private var selectedOption: String? = nil
     
     var body: some View {
         NavigationView {
@@ -36,108 +34,13 @@ struct ContentView: View {
                 ZStack {
                     VStack {
                         HStack {
-                            Rectangle()
-                                .fill(secondaryColor)
-                                .frame(width: 190, height:190)
-                                .cornerRadius(rectCornerRadius)
-                                .overlay(
-                                    VStack(alignment: .leading) {
-                                        HStack{
-                                            Spacer()
-                                            Text("Money spent")
-                                                .font(.system(size: headlineSize, weight: .bold))
-                                                .padding(.top, 15)
-                                            Spacer()
-                                        }
-                                        Spacer()
-                                        HStack {
-                                            Spacer()
-                                            Text("\(moneyManager.filteredSum, specifier: "%.2f")")
-                                                .foregroundColor(.red)
-                                                .font(.system(size: 35))
-                                            Spacer()
-                                        }
-                                        Spacer()
-                                    }
-                                )
-                            Spacer()
-                            Rectangle()
-                                .fill(secondaryColor)
-                                .frame(width: 190, height: 190)
-                                .cornerRadius(rectCornerRadius)
-                                .overlay(
-                                    VStack(alignment: .leading) {
-                                        HStack{
-                                            Spacer()
-                                            Text("Top Categories")
-                                                .font(.system(size: headlineSize, weight: .bold))
-                                                .padding(.top, 15)
-                                            Spacer()
-                                        }
-                                        ForEach(Array(moneyManager.filteredCategoryBalances.prefix(5)), id: \.key) { (key, value) in
-                                            HStack {
-                                                Text(key)
-                                                    .padding(.leading)
-                                                Spacer()
-                                                Text("\(value, specifier: "%.2f") EUR")
-                                                    .padding(.trailing)
-                                            }
-                                        }
-                                        Spacer()
-                                    }
-                                )
+                            RectView(backgroundColor: secondaryColor, numberColor: Color.red, title: "Expenses", number: String(format: "%.2f EUR", moneyManager.filteredSum))
+                            RectView(backgroundColor: secondaryColor, numberColor: Color.green, title: "Income", number: "0.00 EUR")
                         }.padding(.horizontal)
                         HStack {
-                            Rectangle()
-                                .fill(secondaryColor)
-                                .frame(width: 300, height: 190)
-                                .cornerRadius(rectCornerRadius)
-                                .overlay(
-                                    VStack(alignment: .leading) {
-                                        HStack{
-                                            Text("Debts")
-                                                .font(.system(size: headlineSize, weight: .bold))
-                                                .padding(.top, 15)
-                                                .padding(.leading, 15)
-                                            Spacer()
-                                        }
-                                        if moneyManager.debts.isEmpty {
-                                            VStack {
-                                                Spacer()
-                                                HStack {
-                                                    Spacer()
-                                                    Text("All debts paid!")
-                                                        .font(.system(size: 20))
-                                                    Spacer()
-                                                }
-                                                Spacer()
-                                            }
-                                        } else {
-                                            VStack {
-                                                ForEach(moneyManager.debts, id: \.id) { debt in
-                                                    HStack {
-                                                        Text(debt.description)
-                                                            .padding(.leading)
-                                                        Spacer()
-                                                        Text("\(debt.amount, specifier: "%.2f") EUR")
-                                                            .foregroundColor(.red)
-                                                        Button(action: {
-                                                            moneyManager.deleteDebt(debt, dateManager.currentMonth, dateManager.currentYear)
-                                                        }) {
-                                                            Image(systemName: "creditcard.fill")
-                                                        }.padding(.trailing)
-                                                        .padding(.top)
-                                                    }
-                                                    Divider()
-                                                }
-                                                
-                                            }
-                                        }
-                                        Spacer()
-                                    }
-                                )
-                            Spacer()
-                            }.padding(.leading)
+                            RectView(backgroundColor: secondaryColor, numberColor: Color.gray, title: "Debts", number: String(format: "%.2f EUR", moneyManager.debtAmount))
+                            RectView(backgroundColor: secondaryColor, numberColor: Color.gray, title: "Credits", number: "0.00 EUR")
+                            }.padding(.horizontal)
                         HStack {
                             Text("\(dateManager.getMonthName(month: dateManager.currentMonth))")
                                 .font(.system(size: 30, weight: .bold))
@@ -168,7 +71,7 @@ struct ContentView: View {
                                 moneyManager.transactions.remove(atOffsets: indices)
                                 moneyManager.filteredTransactions.remove(atOffsets: indices)
                                 moneyManager.updateCategoryBalancesForMonth()
-                                moneyManager.updateSelectedMonthBalance(transactions: filteredTransactions)
+                                moneyManager.updateSelectedMonthBalance(transactions:  moneyManager.filteredTransactions)
                             }
                         }.cornerRadius(25)
                         .padding(.horizontal, 7)
@@ -179,34 +82,58 @@ struct ContentView: View {
                             Spacer()
                             HStack{
                                 Spacer()
-                                Button(action: {
-                                    showingAddSheet.toggle()
-                                }, label: {
+                                Menu {
+                                    Button(action: {
+                                        selectedOption = "Credit"
+                                    }) {
+                                    Text("Add Credit")
+                                    }
+                                    Button(action: {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                            selectedOption = "Debt"
+                                        }
+                                        showingAddSheet.toggle()
+                                    }) {
+                                        Text("Add Debt")
+                                    }
+                                    Button(action: {
+                                        selectedOption = "Income"
+                                    }) {
+                                        Text("Add Income")
+                                    }
+                                    Button(action: {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                            selectedOption = "Expense"
+                                        }
+                                        showingAddSheet.toggle()
+                                    }) {
+                                        Text("Add Expense")
+                                    }
+                                } label: {
                                     Image(systemName: "plus.circle.fill")
-                                         .resizable()
-                                         .aspectRatio(contentMode: .fit)
-                                         .frame(width: 50, height: 50)
-                                         .padding(.trailing, 15)
-                                         .padding(.bottom)
-                                }).padding(.trailing)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 50, height: 50)
+                                        .padding(.trailing, 15)
+                                        .padding(.bottom)
+                                    }
+                                }
                             }
                         }
-
-                     }
                 }.tabItem {
                     Image(systemName: "house")
                 }
                 .background(backgroundColor)
             }.onAppear{
                 moneyManager.updateFilteredTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear)
-                moneyManager.updateCategoryBalancesForMonth()
-                moneyManager.updateSelectedMonthBalance(transactions: filteredTransactions)
+                moneyManager.updateSelectedMonthBalance(transactions: moneyManager.filteredTransactions)
+                moneyManager.updateDebtAmount()
             }
         }.navigationBarTitle("Your Title", displayMode: .automatic).foregroundColor(.white) // Add this line
         .navigationBarHidden(false)
         .sheet(isPresented: $showingAddSheet, content: {
             NavigationView {
-                AddExpenseView(moneyManager: moneyManager, dateManager: dateManager)
+                AddExpenseView(moneyManager: moneyManager, dateManager: dateManager, selectedOption: selectedOption)
             }
         })
         .sheet(isPresented: $showingFilterSheet, content: {
@@ -214,6 +141,44 @@ struct ContentView: View {
                 FilterExpenseView(moneyManager: moneyManager, dateManager: dateManager)
             }
         })
+    }
+}
+
+struct RectView: View {
+    var backgroundColor: Color
+    var numberColor: Color
+    var title: String
+    var number: String
+    
+    let headlineSize: CGFloat = 23
+    let numberSize: CGFloat = 35
+    let rectCornerRadius: CGFloat = 15
+    
+    var body: some View {
+        Rectangle()
+            .fill(backgroundColor)
+            .frame(width: 190, height:190)
+            .cornerRadius(rectCornerRadius)
+            .overlay(
+                VStack(alignment: .leading) {
+                    HStack {
+                        Spacer()
+                        Text(title)
+                            .font(.system(size: headlineSize, weight: .bold))
+                            .padding(.top, 15)
+                        Spacer()
+                    }
+                    Spacer()
+                HStack {
+                    Spacer()
+                    Text(number)
+                        .foregroundColor(numberColor)
+                        .font(.system(size: numberSize))
+                    Spacer()
+                }
+                Spacer()
+            }
+        )
     }
 }
 
