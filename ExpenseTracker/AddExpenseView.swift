@@ -77,21 +77,33 @@ struct AddExpenseView: View {
             },
             trailing: Button("Add") {
                 if let addAmount = Double(convertCommaToPeriod(amount)) {
-                    moneyManager.addTransaction(Transaction(
-                                                    amount: addAmount,
-                                                    date: date,
-                                                    category: selectedItem ?? "Other",
-                                                    description: description,
-                                                    icon: selectedItemIcon ?? "Other"))
-                    moneyManager.addMoney(addAmount, to: selectedItem ?? "Other")
-                    moneyManager.updateFilteredTransactions(
-                        selectedMonth: dateManager.currentMonth,
-                        selectedYear: dateManager.currentYear
-                    )
-                    moneyManager.updateCategoryBalancesForMonth()
-                    moneyManager.updateSelectedMonthBalance(
-                        transactions: moneyManager.filteredTransactions
-                    )
+                    if selectedOption == "Expense" {
+                        moneyManager.addTransaction(Expense(
+                                                        amount: addAmount,
+                                                        date: date,
+                                                        category: selectedItem ?? "Other",
+                                                        description: description,
+                                                        icon: selectedItemIcon ?? "Other"))
+                        moneyManager.addMoney(addAmount, to: selectedItem ?? "Other")
+                        moneyManager.updateFilteredTransactions(
+                            selectedMonth: dateManager.currentMonth,
+                            selectedYear: dateManager.currentYear
+                        )
+                        moneyManager.updateCategoryBalancesForMonth()
+                        moneyManager.updateSelectedMonthBalance(
+                            transactions: moneyManager.filteredTransactions
+                        )
+                    } else {
+                        moneyManager.addDebt(Expense(
+                            amount: addAmount,
+                            date: date,
+                            category: selectedItem ?? "Other",
+                            description: description,
+                            icon: selectedItemIcon ?? "Other"))
+                        
+                        moneyManager.updateDebtAmount()
+                    }
+
                     amount = ""
                     presentationMode.wrappedValue.dismiss()
                 }

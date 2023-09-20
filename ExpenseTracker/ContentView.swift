@@ -22,7 +22,8 @@ struct ContentView: View {
         return formatter
     }()
     
-    @State private var showingAddSheet = false
+    @State private var showingAddTransactionSheet = false
+    @State private var showingAddIncomeSheet = false
     @State private var showingFilterSheet = false
     @State private var isShowingOptions = false
     
@@ -34,12 +35,12 @@ struct ContentView: View {
                 ZStack {
                     VStack {
                         HStack {
-                            RectView(backgroundColor: secondaryColor, numberColor: Color.red, title: "Expenses", number: String(format: "%.2f EUR", moneyManager.filteredSum))
-                            RectView(backgroundColor: secondaryColor, numberColor: Color.green, title: "Income", number: "0.00 EUR")
+                            RectView(backgroundColor: secondaryColor, numberColor: Color.red, title: "Expenses", number: String(format: "%.2f EUR", moneyManager.filteredTransactionSum))
+                            RectView(backgroundColor: secondaryColor, numberColor: Color.green, title: "Income", number: String(format: "%.2f EUR", moneyManager.filteredIncomeSum))
                         }.padding(.horizontal)
                         HStack {
                             RectView(backgroundColor: secondaryColor, numberColor: Color.gray, title: "Debts", number: String(format: "%.2f EUR", moneyManager.debtAmount))
-                            RectView(backgroundColor: secondaryColor, numberColor: Color.gray, title: "Credits", number: "0.00 EUR")
+                            RectView(backgroundColor: secondaryColor, numberColor: Color.gray, title: "Credits", number: String(format: "%.2f EUR", moneyManager.creditAmount))
                             }.padding(.horizontal)
                         HStack {
                             Text("\(dateManager.getMonthName(month: dateManager.currentMonth))")
@@ -58,24 +59,24 @@ struct ContentView: View {
                             Spacer()
                         }.background(backgroundColor)
                         .padding(.top)
-                        
-                        List {
-                            ForEach(moneyManager.filteredTransactions, id: \.self) { transaction in
-                                HStack {
-                                Text("\(transaction.date, formatter: dateFormatter)")
-                                Text("\(transaction.description)")
-                                Spacer()
-                                Text("- \(transaction.amount, specifier: "%.2f") EUR").foregroundColor(.red)
-                                }
-                            }.onDelete { indices in
-                                moneyManager.transactions.remove(atOffsets: indices)
-                                moneyManager.filteredTransactions.remove(atOffsets: indices)
-                                moneyManager.updateCategoryBalancesForMonth()
-                                moneyManager.updateSelectedMonthBalance(transactions:  moneyManager.filteredTransactions)
-                            }
-                        }.cornerRadius(25)
-                        .padding(.horizontal, 7)
-                        .background(backgroundColor)
+//
+//                        List {
+//                            ForEach(moneyManager.filteredTransactions, id: \.self) { transaction in
+//                                HStack {
+//                                Text("\(transaction.date, formatter: dateFormatter)")
+//                                Text("\(transaction.description)")
+//                                Spacer()
+//                                Text("- \(transaction.amount, specifier: "%.2f") EUR").foregroundColor(.red)
+//                                }
+//                            }.onDelete { indices in
+//                                moneyManager.transactions.remove(atOffsets: indices)
+//                                moneyManager.filteredTransactions.remove(atOffsets: indices)
+//                                moneyManager.updateCategoryBalancesForMonth()
+//                                moneyManager.updateSelectedMonthBalance(transactions:  moneyManager.filteredTransactions)
+//                            }
+//                        }.cornerRadius(25)
+//                        .padding(.horizontal, 7)
+//                        .background(backgroundColor)
                     }
                     ZStack {
                         VStack {
@@ -84,7 +85,10 @@ struct ContentView: View {
                                 Spacer()
                                 Menu {
                                     Button(action: {
-                                        selectedOption = "Credit"
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                            selectedOption = "Credit"
+                                        }
+                                        showingAddIncomeSheet.toggle()
                                     }) {
                                     Text("Add Credit")
                                     }
@@ -92,12 +96,15 @@ struct ContentView: View {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                             selectedOption = "Debt"
                                         }
-                                        showingAddSheet.toggle()
+                                        showingAddTransactionSheet.toggle()
                                     }) {
                                         Text("Add Debt")
                                     }
                                     Button(action: {
-                                        selectedOption = "Income"
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                            selectedOption = "Income"
+                                        }
+                                        showingAddIncomeSheet.toggle()
                                     }) {
                                         Text("Add Income")
                                     }
@@ -105,7 +112,7 @@ struct ContentView: View {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                             selectedOption = "Expense"
                                         }
-                                        showingAddSheet.toggle()
+                                        showingAddTransactionSheet.toggle()
                                     }) {
                                         Text("Add Expense")
                                     }
@@ -128,12 +135,20 @@ struct ContentView: View {
                 moneyManager.updateFilteredTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear)
                 moneyManager.updateSelectedMonthBalance(transactions: moneyManager.filteredTransactions)
                 moneyManager.updateDebtAmount()
+                moneyManager.updateFilteredIncome(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear)
+                moneyManager.updateSelectedIncomeMonthBalance(income: moneyManager.filteredIncome)
+                moneyManager.updateCreditAmount()
             }
         }.navigationBarTitle("Your Title", displayMode: .automatic).foregroundColor(.white) // Add this line
         .navigationBarHidden(false)
-        .sheet(isPresented: $showingAddSheet, content: {
+        .sheet(isPresented: $showingAddTransactionSheet, content: {
             NavigationView {
                 AddExpenseView(moneyManager: moneyManager, dateManager: dateManager, selectedOption: selectedOption)
+            }
+        })
+        .sheet(isPresented: $showingAddIncomeSheet, content: {
+            NavigationView {
+                AddIncomeView(moneyManager: moneyManager, dateManager: dateManager, selectedOption: selectedOption)
             }
         })
         .sheet(isPresented: $showingFilterSheet, content: {

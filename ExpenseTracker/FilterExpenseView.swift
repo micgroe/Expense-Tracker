@@ -55,6 +55,8 @@ struct FilterExpenseView: View {
                 moneyManager.updateFilteredTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear)
                 moneyManager.updateCategoryBalancesForMonth()
                 moneyManager.updateSelectedMonthBalance(transactions: moneyManager.filteredTransactions)
+                moneyManager.updateFilteredIncome(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear)
+                moneyManager.updateSelectedIncomeMonthBalance(income: moneyManager.filteredIncome)
                 presentationMode.wrappedValue.dismiss()
             }
             Spacer()

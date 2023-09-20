@@ -9,12 +9,19 @@ import Foundation
 
 class MoneyManager: ObservableObject {
     @Published var categoryBalances: [String: Double] = [:]
-    @Published var transactions: [Transaction] = []
-    @Published var filteredTransactions: [Transaction] = []
-    @Published var filteredSum: Double = 0.0
+    @Published var transactions: [Expense] = []
+    @Published var filteredTransactions: [Expense] = []
+    @Published var filteredTransactionSum: Double = 0.0
     @Published var filteredCategoryBalances: [String: Double] = [:]
     
-    @Published var debts: [Transaction] = []
+    @Published var incomes: [Income] = []
+    @Published var filteredIncome: [Income] = []
+    @Published var filteredIncomeSum: Double = 0.0
+    
+    @Published var credits: [Income] = []
+    @Published var creditAmount: Double = 0.0
+    
+    @Published var debts: [Expense] = []
     @Published var debtAmount: Double = 0.0
     
     init() {
@@ -31,6 +38,8 @@ class MoneyManager: ObservableObject {
         // Load transactions from UserDefaults when initializing the manager
         loadAllTransactions()
         loadDebts()
+        loadIncome()
+        loadCredits()
     }
     
     func addMoney(_ amount: Double, to category: String) {
@@ -58,7 +67,7 @@ class MoneyManager: ObservableObject {
         return categoryBalances[category] ?? 0.0
     }
     
-    func addTransaction(_ transaction: Transaction) {
+    func addTransaction(_ transaction: Expense) {
         transactions.append(transaction)
         saveAllTransactions()
     }
@@ -68,10 +77,10 @@ class MoneyManager: ObservableObject {
         saveAllTransactions()
     }
     
-    func updateSelectedMonthBalance(transactions: [Transaction]) {
-        filteredSum = 0
+    func updateSelectedMonthBalance(transactions: [Expense]) {
+        filteredTransactionSum = 0
         for transaction in transactions {
-            filteredSum += transaction.amount
+            filteredTransactionSum += transaction.amount
         }
     }
     
@@ -89,13 +98,13 @@ class MoneyManager: ObservableObject {
         filteredCategoryBalances = Dictionary(uniqueKeysWithValues: sortedBalances)
     }
     
-    func addDebt(_ debt: Transaction) {
+    func addDebt(_ debt: Expense) {
         debts.append(debt)
         updateDebtAmount()
         saveDebts()
     }
     
-    func deleteDebt(_ debt: Transaction, _ selectedMonth: Int, _ selectedYear: Int) {
+    func deleteDebt(_ debt: Expense, _ selectedMonth: Int, _ selectedYear: Int) {
         if let index = debts.firstIndex(of: debt) {
             debts.remove(at: index)
         }
@@ -116,7 +125,7 @@ class MoneyManager: ObservableObject {
     
     private func loadAllTransactions() {
         if let savedTransactionsData = UserDefaults.standard.data(forKey: "transactions"),
-           let savedTransactions = try? JSONDecoder().decode([Transaction].self, from: savedTransactionsData) {
+           let savedTransactions = try? JSONDecoder().decode([Expense].self, from: savedTransactionsData) {
             transactions = savedTransactions
         }
     }
@@ -129,8 +138,8 @@ class MoneyManager: ObservableObject {
     
     private func loadDebts() {
         if let savedDebtData = UserDefaults.standard.data(forKey: "debts"),
-           let savedDebts = try? JSONDecoder().decode([Transaction].self, from: savedDebtData) {
-            filteredTransactions = savedDebts
+           let savedDebts = try? JSONDecoder().decode([Expense].self, from: savedDebtData) {
+            debts = savedDebts
         }
     }
     
@@ -139,13 +148,91 @@ class MoneyManager: ObservableObject {
             UserDefaults.standard.set(encodedDebts, forKey: "debts")
         }
     }
+    
+    func addIncome(_ income: Income) {
+        incomes.append(income)
+        saveIncome()
+    }
+    
+    func removeIncome(at Index: Int) {
+        incomes.remove(at: Index)
+        saveIncome()
+    }
+    
+    func updateFilteredIncome(selectedMonth: Int, selectedYear: Int) {
+        filteredIncome = incomes.filter { income in
+            let incomeComponents = Calendar.current.dateComponents([.year, .month], from: income.date)
+            return incomeComponents.year == selectedYear && incomeComponents.month == selectedMonth
+        }
+    }
+    
+    func updateSelectedIncomeMonthBalance(income: [Income]) {
+        filteredIncomeSum = 0
+        for income in filteredIncome {
+            filteredIncomeSum += income.amount
+        }
+    }
+    
+    private func loadIncome() {
+        if let savedIncomeData = UserDefaults.standard.data(forKey: "income"),
+           let savedIncome = try? JSONDecoder().decode([Income].self, from: savedIncomeData) {
+            incomes = savedIncome
+        }
+    }
+    
+    private func saveIncome() {
+        if let encodedIncome = try? JSONEncoder().encode(incomes) {
+            UserDefaults.standard.set(encodedIncome, forKey: "income")
+        }
+    }
+    
+    func addCredit(_ credit: Income) {
+        credits.append(credit)
+        updateCreditAmount()
+        saveCredits()
+    }
+    
+    func deleteCredit(_ credit: Income, _ selectedMonth: Int, _ selectedYear: Int) {
+        if let index = credits.firstIndex(of: credit) {
+            credits.remove(at: index)
+        }
+        updateCreditAmount()
+        saveCredits()
+    }
+    
+    func updateCreditAmount() {
+        creditAmount = 0
+        for credit in credits {
+            creditAmount += credit.amount
+        }
+    }
+    
+    private func loadCredits() {
+        if let savedCreditsData = UserDefaults.standard.data(forKey: "credit"),
+           let savedCredits = try? JSONDecoder().decode([Income].self, from: savedCreditsData) {
+            credits = savedCredits
+        }
+    }
+    
+    private func saveCredits() {
+        if let encodedCredits = try? JSONEncoder().encode(credits) {
+            UserDefaults.standard.set(encodedCredits, forKey: "credit")
+        }
+    }
 }
 
-struct Transaction: Hashable, Identifiable, Codable {
+struct Expense: Hashable, Identifiable, Codable {
     let id = UUID()
     let amount: Double
     let date: Date
     let category: String
     let description: String
     let icon: String
+}
+
+struct Income: Hashable, Identifiable, Codable {
+    let id = UUID()
+    let amount: Double
+    let date: Date
+    let description: String
 }
