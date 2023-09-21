@@ -10,6 +10,8 @@
 		0607078E2AB67F9F00127E1C /* DateManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0607078D2AB67F9F00127E1C /* DateManagerClass.swift */; };
 		0636FAE52ABA51BD00745795 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0636FAE42ABA51BD00745795 /* Tests.swift */; };
 		0636FAE72ABB24F000745795 /* AddIncomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0636FAE62ABB24F000745795 /* AddIncomeView.swift */; };
+		0636FAE92ABB5F8800745795 /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0636FAE82ABB5F8800745795 /* BarChartView.swift */; };
+		0636FAEB2ABB8EE400745795 /* ExpenseInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0636FAEA2ABB8EE400745795 /* ExpenseInfoView.swift */; };
 		0640C2742AAD3E8F0090A525 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0640C2732AAD3E8F0090A525 /* AppDelegate.swift */; };
 		0640C2762AAD3E8F0090A525 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0640C2752AAD3E8F0090A525 /* SceneDelegate.swift */; };
 		0640C2782AAD3E8F0090A525 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0640C2772AAD3E8F0090A525 /* ContentView.swift */; };
@@ -27,6 +29,8 @@
 		0607078D2AB67F9F00127E1C /* DateManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManagerClass.swift; sourceTree = "<group>"; };
 		0636FAE42ABA51BD00745795 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		0636FAE62ABB24F000745795 /* AddIncomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddIncomeView.swift; sourceTree = "<group>"; };
+		0636FAE82ABB5F8800745795 /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
+		0636FAEA2ABB8EE400745795 /* ExpenseInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseInfoView.swift; sourceTree = "<group>"; };
 		0640C2702AAD3E8F0090A525 /* ExpenseTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExpenseTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0640C2732AAD3E8F0090A525 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0640C2752AAD3E8F0090A525 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -56,6 +60,8 @@
 		0640C2672AAD3E8F0090A525 = {
 			isa = PBXGroup;
 			children = (
+				0636FAE82ABB5F8800745795 /* BarChartView.swift */,
+				0636FAEA2ABB8EE400745795 /* ExpenseInfoView.swift */,
 				0636FAE62ABB24F000745795 /* AddIncomeView.swift */,
 				0636FAE42ABA51BD00745795 /* Tests.swift */,
 				0640C2722AAD3E8F0090A525 /* ExpenseTracker */,
@@ -171,6 +177,7 @@
 			files = (
 				0640C2742AAD3E8F0090A525 /* AppDelegate.swift in Sources */,
 				0636FAE52ABA51BD00745795 /* Tests.swift in Sources */,
+				0636FAEB2ABB8EE400745795 /* ExpenseInfoView.swift in Sources */,
 				0607078E2AB67F9F00127E1C /* DateManagerClass.swift in Sources */,
 				0640C28C2AADE90C0090A525 /* PieChartView.swift in Sources */,
 				0640C2762AAD3E8F0090A525 /* SceneDelegate.swift in Sources */,
@@ -180,6 +187,7 @@
 				0640C2782AAD3E8F0090A525 /* ContentView.swift in Sources */,
 				06E666252AAF85AB00434EE4 /* MoneyManagerClass.swift in Sources */,
 				0636FAE72ABB24F000745795 /* AddIncomeView.swift in Sources */,
+				0636FAE92ABB5F8800745795 /* BarChartView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,7 +331,7 @@
 				DEVELOPMENT_TEAM = H673MS9QFD;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = ExpenseTracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -345,7 +353,7 @@
 				DEVELOPMENT_TEAM = H673MS9QFD;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = ExpenseTracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

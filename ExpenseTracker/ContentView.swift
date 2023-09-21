@@ -27,6 +27,8 @@ struct ContentView: View {
     @State private var showingFilterSheet = false
     @State private var isShowingOptions = false
     
+    @State private var isShowingExpenseInfo = false
+    
     @State private var selectedOption: String? = nil
     
     var body: some View {
@@ -35,7 +37,12 @@ struct ContentView: View {
                 ZStack {
                     VStack {
                         HStack {
-                            RectView(backgroundColor: secondaryColor, numberColor: Color.red, title: "Expenses", number: String(format: "%.2f EUR", moneyManager.filteredTransactionSum))
+                            NavigationLink(destination: BarChartView(moneyManager: moneyManager, dateManager: dateManager), isActive: $isShowingExpenseInfo) {
+                                RectView(backgroundColor: secondaryColor, numberColor: Color.red, title: "Expenses", number: String(format: "%.2f EUR", moneyManager.filteredTransactionSum)).onTapGesture {
+                                    moneyManager.updateGroupedExpenses(dateManager.currentMonth, dateManager.currentYear)
+                                    isShowingExpenseInfo.toggle()
+                                }
+                            }
                             RectView(backgroundColor: secondaryColor, numberColor: Color.green, title: "Income", number: String(format: "%.2f EUR", moneyManager.filteredIncomeSum))
                         }.padding(.horizontal)
                         HStack {
@@ -127,7 +134,8 @@ struct ContentView: View {
                                 }
                             }
                         }
-                }.tabItem {
+                }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                .tabItem {
                     Image(systemName: "house")
                 }
                 .background(backgroundColor)

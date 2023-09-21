@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Charts
 
 class MoneyManager: ObservableObject {
     @Published var categoryBalances: [String: Double] = [:]
@@ -13,6 +14,8 @@ class MoneyManager: ObservableObject {
     @Published var filteredTransactions: [Expense] = []
     @Published var filteredTransactionSum: Double = 0.0
     @Published var filteredCategoryBalances: [String: Double] = [:]
+    @Published var groupedExpenses: [Int: Double] = [:]
+    @Published var groupedBars: [Bar] = []
     
     @Published var incomes: [Income] = []
     @Published var filteredIncome: [Income] = []
@@ -96,6 +99,65 @@ class MoneyManager: ObservableObject {
         // Sort the category balances by amount (descending order)
         let sortedBalances = filteredCategoryBalances.sorted { $0.value > $1.value }
         filteredCategoryBalances = Dictionary(uniqueKeysWithValues: sortedBalances)
+    }
+    
+    func updateGroupedExpenses(_ month: Int, _ year: Int) {
+        groupedExpenses = [:]
+        groupedBars = []
+        var tempGroupedExpenses: [String: Double] = [:]
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd"
+        
+        for expense in filteredTransactions {
+            let dateString = dateFormatter.string(from: expense.date)
+            
+            if tempGroupedExpenses[dateString] != nil {
+                tempGroupedExpenses[dateString]! += expense.amount
+            } else {
+                tempGroupedExpenses[dateString] = expense.amount
+            }
+        }
+        var components = DateComponents()
+        components.year = year
+        components.month = month
+        components.day = 1
+        
+        if let firstDayOfMonth = Calendar.current.date(from: components) {
+            // Calculate the range of days for the current month
+            if let range = Calendar.current.range(of: .day, in: .month, for: firstDayOfMonth) {
+                
+                // Iterate through the range of days and add them to the dictionary with values set to 0
+                for day in range {
+                    components.day = day
+                    if let date = Calendar.current.date(from: components) {
+                        // Format the date as a string in yyyy-MM-dd format
+                        let dateFormatter = DateFormatter()
+                        dateFormatter.dateFormat = "dd"
+                        let dateString = dateFormatter.string(from: date)
+                        
+                        if tempGroupedExpenses[dateString] == nil {
+                            tempGroupedExpenses[dateString] = 0.0
+                        }
+                    }
+                }
+            }
+        }
+        for (key, value) in tempGroupedExpenses {
+            if let intKey = Int(key) {
+                groupedExpenses[intKey] = value
+            }
+        }
+        
+        let sortedArray = groupedExpenses.sorted { $0.key < $1.key }
+        
+        for (key, value) in sortedArray {
+            groupedExpenses[key] = value
+        }
+        
+        for expense in groupedExpenses {
+            groupedBars.append(Bar(day: expense.key, expense: expense.value))
+        }
     }
     
     func addDebt(_ debt: Expense) {
