@@ -53,7 +53,7 @@ struct AddIncomeView: View {
                 trailing: Button("Add") {
                     if let addAmount = Double(convertCommaToPeriod(amount)) {
                         if selectedOption == "Income" {
-                            moneyManager.addIncome(Income(amount: addAmount, date: date, description: description))
+                            moneyManager.addIncome(Transaction(amount: addAmount, date: date, description: description))
                             moneyManager.updateFilteredIncome(
                                 selectedMonth: dateManager.currentMonth,
                                 selectedYear: dateManager.currentYear
@@ -64,7 +64,7 @@ struct AddIncomeView: View {
                             amount = ""
                             presentationMode.wrappedValue.dismiss()
                         } else {
-                            moneyManager.addCredit(Income(amount: addAmount, date: date, description: description))
+                            moneyManager.addCredit(Transaction(amount: addAmount, date: date, description: description))
                             moneyManager.updateCreditAmount()
                             amount = ""
                             presentationMode.wrappedValue.dismiss()
