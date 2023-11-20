@@ -11,10 +11,129 @@ struct ExpenseInfoView: View {
     @ObservedObject var moneyManager: MoneyManager
     @ObservedObject var dateManager: DateManager
     
+    let backgroundColor = Color(.systemBackground)
+    let secondaryColor = Color(.secondarySystemBackground)
+    let tertiaryColor = Color(.tertiarySystemBackground)
+    
+    @State var amount: String = ""
+    @State var isShowingComparisonView = false
+    @State var isShowingAddSubscriptionView = false
+    
+    
+    let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMM" // Customize the date format
+        return formatter
+    }()
+    
     var body: some View {
-        VStack {
-            Text("Test")
-            BarChartView(moneyManager: moneyManager, dateManager: dateManager)
+        NavigationStack {
+//            ScrollView {
+                VStack {
+                    HStack {
+                        Image(systemName: "chevron.left")
+                            .padding(.leading, 40)
+                            .onTapGesture {
+                                dateManager.currentMonth -= 1
+                                moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "Expense")
+                                moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyExpenses, transactionType: "Expense")
+                                moneyManager.updateGroupedExpenses(dateManager.currentMonth, dateManager.currentYear)
+                            }
+                        Spacer()
+                        Text("\(dateManager.getMonthName(month: dateManager.currentMonth))").font(.system(size: 25, weight: .bold))
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .padding(.trailing, 40)
+                            .onTapGesture {
+                                dateManager.currentMonth += 1
+                                moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "Expense")
+                                moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyExpenses, transactionType: "Expense")
+                                moneyManager.updateGroupedExpenses(dateManager.currentMonth, dateManager.currentYear)
+                            }
+                    }
+                    VStack {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text("Expenses this month")
+                                    .font(.system(size: 13))
+                                    .padding(.top, 10)
+                                Text(String(format: "%.2f EUR", moneyManager.monthlyExpenseSum))
+                                    .font(.system(size: 20, weight: .bold))
+                                    .padding(.top, 4)
+                            }
+                            .padding(.leading)
+                            Spacer()
+                            if let percentChange = moneyManager.getPercentageDifference(dateManager.currentMonth, dateManager.currentYear) {
+                                Image(systemName: percentChange > 0 ? "arrow.down.circle" : "arrow.up.circle")
+                                    .foregroundColor(Color.gray)
+                                Text("\(Int(round(percentChange)))% from last month")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(Color.gray)
+                            }
+                            Spacer()
+                        }
+                        BarChartView(moneyManager: moneyManager, dateManager: dateManager)
+                            .padding(.horizontal)
+                            .padding(.bottom)
+                        Divider()
+                            .padding(.leading)
+                        HStack {
+                                NavigationLink(destination: ExpenseComparisonView(moneyManager: moneyManager, dateManager: dateManager), isActive: $isShowingComparisonView) {
+                                        Button("See more info", action: {
+                                            moneyManager.updateFilteredSixMonthExpenses(dateManager.currentMonth, dateManager.currentYear)
+                                            moneyManager.updateCategoryTotals(transactions: moneyManager.filteredSixMonths)
+                                            moneyManager.updateTotalAmount(transactions: moneyManager.filteredSixMonths)
+                                            isShowingComparisonView.toggle()
+                                })
+                            }
+                            .foregroundColor(Color.white)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(Color.gray)
+                        }.frame(height: 35)
+                            .padding(.horizontal)
+                        
+                    }.background {
+                        RoundedRectangle(cornerRadius: 15)
+                            .fill(secondaryColor)
+                    }
+                    VStack(alignment: .leading) {
+                        HStack {
+                            NavigationLink(destination: MonthlyPaymentsView(moneyManager: moneyManager, dateManager: dateManager), isActive: $isShowingAddSubscriptionView) {
+                                Button("Manage monthly payments", action: {
+                                    isShowingAddSubscriptionView.toggle()
+                                })
+                            }.foregroundColor(Color.white)
+                            Spacer()
+                            Image(systemName: "chevron.right").foregroundColor(Color.gray)
+                        }.frame(height: 45)
+                    }.padding(.horizontal)
+                        .background(
+                            RoundedRectangle(cornerRadius: 15).fill(secondaryColor))
+                        .padding(.top)
+                    
+                }.padding(.horizontal)
+                List {
+                    ForEach(moneyManager.monthlyExpenses, id: \.id) { transaction in
+                        HStack {
+                            Text("\(transaction.description)")
+                                .padding(.leading)
+                            Spacer()
+                            Text("- \(transaction.amount, specifier: "%.2f") EUR").foregroundColor(.red)
+                                .padding(.trailing)
+                        }
+                    }.onDelete { indexSet in
+                        for index in indexSet {
+                            let transactionIndex = moneyManager.transactions.firstIndex(of: moneyManager.monthlyExpenses[index])
+                            moneyManager.removeTransaction(at: transactionIndex!)
+                        }
+                        
+                        moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "Expense")
+                        moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyExpenses, transactionType: "Expense")
+                        moneyManager.updateGroupedExpenses(dateManager.currentMonth, dateManager.currentYear)
+                    }
+//                }
+            }
         }
     }
 }

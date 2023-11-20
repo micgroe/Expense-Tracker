@@ -15,17 +15,13 @@ struct BarChartView: View {
     @State var currentActiveItem: Bar?
     @State var plotWidth: CGFloat = 0
     
-    let backgroundColor = Color(.systemBackground)
-    let secondaryColor = Color(.secondarySystemBackground)
-    let tertiaryColor = Color(.tertiarySystemBackground)
-    
     var body: some View {
         Chart {
             ForEach(moneyManager.groupedBars, id: \.day) { expense in
                 BarMark(x: .value("Day", expense.day),
                         y: .value("Expense", expense.expense)
                 )
-                .cornerRadius(2)
+                .cornerRadius(3)
                 .foregroundStyle(currentActiveItem?.id == expense.id ? .green : .blue)
                 if let currentActiveItem, currentActiveItem.id == expense.id {
                     RuleMark(x: .value("Day", currentActiveItem.day))
@@ -46,7 +42,7 @@ struct BarChartView: View {
         }.chartXScale(domain: [1, moneyManager.groupedBars.count])
             .chartYScale(domain: [1, Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*1.1)])
         .chartYAxis {
-            AxisMarks(values: [Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*0.25), Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*0.75)])
+            AxisMarks(values: [0, Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*0.36), Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*0.73), Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*1.1)])
         }
         .chartXAxis {
             AxisMarks(values: .automatic(desiredCount: 6))

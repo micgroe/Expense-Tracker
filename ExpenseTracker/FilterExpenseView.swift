@@ -52,11 +52,9 @@ struct FilterExpenseView: View {
             }
 
             Button("Confirm") {
-                moneyManager.updateFilteredTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear)
+                moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "All")
                 moneyManager.updateCategoryBalancesForMonth()
-                moneyManager.updateSelectedMonthBalance(transactions: moneyManager.filteredTransactions)
-                moneyManager.updateFilteredIncome(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear)
-                moneyManager.updateSelectedIncomeMonthBalance(income: moneyManager.filteredIncome)
+                moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyTransactions, transactionType: "All")
                 presentationMode.wrappedValue.dismiss()
             }
             Spacer()
