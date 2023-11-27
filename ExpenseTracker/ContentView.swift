@@ -41,7 +41,7 @@ struct ContentView: View {
                     }
                     HStack {
                         NavigationLink(destination: ExpenseInfoView(moneyManager: moneyManager, dateManager: dateManager), isActive: $isShowingExpenseInfo) {
-                            RectView(backgroundColor: secondaryColor, numberColor: Color.red, title: "Expenses", number: String(format: "%.2f EUR", moneyManager.monthlyExpenseSum)).onTapGesture {
+                            RectView(backgroundColor: secondaryColor, numberColor: Color.red, title: "Expenses", number: String(format: "%.2f EUR", moneyManager.getCurrentMonthSum(dateManager: dateManager))).onTapGesture {
                                 moneyManager.updateGroupedExpenses(dateManager.currentMonth, dateManager.currentYear)
                                 isShowingExpenseInfo.toggle()
                             }
@@ -49,7 +49,7 @@ struct ContentView: View {
                         RectView(backgroundColor: secondaryColor, numberColor: Color.green, title: "Income", number: String(format: "%.2f EUR", moneyManager.monthlyIncomeSum))
                     }.padding(.horizontal)
                     HStack {
-                        NavigationLink(destination: DebtInfoView(debtManager: debtManager), isActive: $isShowingDebtInfo) {
+                        NavigationLink(destination: DebtInfoView(debtManager: debtManager, moneyManager: moneyManager), isActive: $isShowingDebtInfo) {
                             RectView(backgroundColor: secondaryColor, numberColor: Color.gray, title: "Debts", number: String(format: "%.2f EUR", debtManager.totalDebts)).onTapGesture {
                                 isShowingDebtInfo.toggle()
                             }
@@ -123,7 +123,6 @@ struct ContentView: View {
                     }
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(backgroundColor)
-            
         }.onAppear{
             moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "Expense")
             moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyExpenses, transactionType: "Expense")

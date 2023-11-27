@@ -59,7 +59,6 @@ struct AddDebtView: View {
                                 selectedIdx = (selectedIdx == index) ? nil : index
                                 selectedDebitor = debtManager.debitors[selectedIdx!].name
                             }
-                            
                         )
                     }
                     if isEditing {
@@ -124,10 +123,11 @@ struct SelectionRowView: View {
             onTap()
         }) {
             HStack {
+                Image(systemName: isSelected ? "circle.dashed.inset.filled" : "circle.dashed")
                 Text(text)
                     .foregroundStyle(.white)
                 Spacer()
-            }.background(isSelected ? Color.blue : Color.clear)
+            }
         }
     }
 }

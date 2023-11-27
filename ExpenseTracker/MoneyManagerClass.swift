@@ -57,6 +57,15 @@ class MoneyManager: ObservableObject {
         transactions.remove(at: Index)
         saveAllTransactions()
     }
+    func getCurrentMonthSum(dateManager: DateManager) -> Double {
+        let currentTransactions = transactions.filter { transaction in
+            let transactionComponents = Calendar.current.dateComponents([.year, .month], from: transaction.date)
+            return transactionComponents.year == dateManager.currentYear && transactionComponents.month == dateManager.currentMonth
+        }
+        let currentSum = currentTransactions.reduce(0) { $0 + $1.amount }
+        return currentSum
+    }
+    
     
     func updateMonthlyTransactions(selectedMonth: Int, selectedYear: Int, transactionType: String) {
         switch transactionType {
@@ -440,7 +449,7 @@ class MoneyManager: ObservableObject {
     
 }
 
-struct Transaction: Hashable, Identifiable, Codable {
+struct Transaction: Hashable, Identifiable, Codable, Equatable {
     let id = UUID()
     let amount: Double
     let date: Date
