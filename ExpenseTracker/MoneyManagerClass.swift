@@ -66,7 +66,58 @@ class MoneyManager: ObservableObject {
         return currentSum
     }
     
+    func getSelectedMonthSum(dateManager: DateManager) -> Double {
+        let currentTransactions = transactions.filter { transaction in
+            let transactionComponents = Calendar.current.dateComponents([.year, .month], from: transaction.date)
+            return transactionComponents.year == dateManager.selectedYear && transactionComponents.month == dateManager.selectedMonth
+        }
+        let currentSum = currentTransactions.reduce(0) { $0 + $1.amount }
+        return currentSum
+    }
     
+    func getCurrentMonthExpenses(dateManager: DateManager) -> [Transaction] {
+        let currentMonthExpenses = transactions.filter { transaction in
+            let transactionComponents = Calendar.current.dateComponents([.year, .month], from: transaction.date)
+            return transactionComponents.year == dateManager.selectedYear && transactionComponents.month == dateManager.selectedMonth
+        }
+        return currentMonthExpenses
+    }
+    
+    func getAggregatedDays(dateManager: DateManager) -> [Bar] {
+        var aggregatedTransactions: [Int: Double] = [:]
+
+        let calendar = Calendar.current
+
+        for transaction in getCurrentMonthExpenses(dateManager: dateManager) {
+            let day = calendar.component(.day, from: transaction.date)
+            aggregatedTransactions[day, default: 0] += transaction.amount
+        }
+        
+        var result = aggregatedTransactions.map { (day, totalAmount) in
+            return Bar(day: day, expense: totalAmount)
+        }
+        
+        result = result.sorted { $0.day < $1.day }
+        return result
+    }
+    
+    func getCurrentDayExpenses(dateManager: DateManager, day: Int) -> [Transaction] {
+        let currentDayExpenses = getCurrentMonthExpenses(dateManager: dateManager).filter { transaction in
+            let transactionDay = Calendar.current.component(.day, from: transaction.date)
+            return transactionDay == day
+        }
+        return currentDayExpenses
+    }
+    
+    func getMaxExpense(dateManager: DateManager) -> Double? {
+        guard let maxTransaction = getAggregatedDays(dateManager: dateManager).max(by: { $0.expense < $1.expense }) else {
+            return nil
+        }
+        return maxTransaction.expense
+    }
+    
+    
+//    Old functions
     func updateMonthlyTransactions(selectedMonth: Int, selectedYear: Int, transactionType: String) {
         switch transactionType {
         case "Expense":

@@ -49,7 +49,7 @@ struct ContentView: View {
                         RectView(backgroundColor: secondaryColor, numberColor: Color.green, title: "Income", number: String(format: "%.2f EUR", moneyManager.monthlyIncomeSum))
                     }.padding(.horizontal)
                     HStack {
-                        NavigationLink(destination: DebtInfoView(debtManager: debtManager, moneyManager: moneyManager), isActive: $isShowingDebtInfo) {
+                        NavigationLink(destination: DebtInfoView(debtManager: debtManager, moneyManager: moneyManager, dateManager: dateManager), isActive: $isShowingDebtInfo) {
                             RectView(backgroundColor: secondaryColor, numberColor: Color.gray, title: "Debts", number: String(format: "%.2f EUR", debtManager.totalDebts)).onTapGesture {
                                 isShowingDebtInfo.toggle()
                             }

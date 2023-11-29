@@ -10,6 +10,7 @@ import SwiftUI
 struct DebtInfoView: View {
     @ObservedObject var debtManager: DebtManager
     @ObservedObject var moneyManager: MoneyManager
+    @ObservedObject var dateManager: DateManager
     
     @State private var testDebitors: [Debitor] = [Debitor(name: "Davis", debtAmount: 50, debts: [Transaction(amount: 20, date: Date(), category: "Car", description: "Test 1", icon: nil, type: "Debt"), Transaction(amount: 30, date: Date(), category: "Grocery", description: "Test 2", icon: nil, type: "Debt")]), Debitor(name: "Simon", debtAmount: 30, debts: [])]
     
@@ -57,7 +58,7 @@ struct DebtInfoView: View {
                                             Spacer()
                                             Text(String(format: "%.2f EUR", transaction.amount))
                                             Button(action: {
-                                                debtManager.debtPaid(transaction, from: debitor, moneyManager)
+                                                debtManager.debtPaid(transaction, from: debitor, moneyManager, dateManager)
                                             }, label: {
                                                 Image(systemName: "creditcard.circle")
                                             }).padding(.horizontal)
@@ -105,5 +106,5 @@ struct DebtItemView: View {
 }
 
 #Preview {
-    DebtInfoView(debtManager: DebtManager(), moneyManager: MoneyManager())
+    DebtInfoView(debtManager: DebtManager(), moneyManager: MoneyManager(), dateManager: DateManager())
 }

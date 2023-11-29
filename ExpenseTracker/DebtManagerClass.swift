@@ -38,16 +38,14 @@ class DebtManager: ObservableObject {
         saveDebts()
     }
     
-    func debtPaid(_ transaction: Transaction, from debitor: Debitor, _ moneyManager: MoneyManager){
+    func debtPaid(_ transaction: Transaction, from debitor: Debitor, _ moneyManager: MoneyManager, _ dateManager: DateManager){
         if let debitorIndex = debitors.firstIndex(of: debitor) {
             if let transactionIndex = debitor.debts.firstIndex(where: { $0.id == transaction.id }) {
-                print("Transaction Index: \(transactionIndex)")
                 debitors[debitorIndex].debts.remove(at: transactionIndex)
-                print("Debts of selected Debitor: \(debitors[debitorIndex].debts)")
                 removeTotalDebts(amount: transaction.amount)
                 debitors[debitorIndex].debtAmount -= transaction.amount
                 
-                moneyManager.addTransaction(transaction)
+                moneyManager.addTransaction(Transaction(amount: transaction.amount, date: Date(), category: transaction.category, description: transaction.description, icon: transaction.icon, type: transaction.type))
                 
             }
 
@@ -63,9 +61,14 @@ class DebtManager: ObservableObject {
     
     
     private func loadDebts() {
-        if let savedDebtData = UserDefaults.standard.data(forKey: "transactions"),
+        if let savedDebtData = UserDefaults.standard.data(forKey: "Debts"),
            let savedDebts = try? JSONDecoder().decode([Debitor].self, from: savedDebtData) {
             debitors = savedDebts
+            for debitor in debitors {
+                for transaction in debitor.debts {
+                    totalDebts += transaction.amount
+                }
+            }
         }
     }
     

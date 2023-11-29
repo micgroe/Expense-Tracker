@@ -11,6 +11,9 @@ class DateManager: ObservableObject {
     @Published var currentMonth: Int = Calendar.current.component(.month, from: Date())
     @Published var currentYear: Int = Calendar.current.component(.year, from: Date())
     
+    @Published var selectedMonth: Int = Calendar.current.component(.month, from: Date())
+    @Published var selectedYear: Int = Calendar.current.component(.year, from: Date())
+    
     func getMonthFromDate(date: Date) -> Int {
         let month = Calendar.current.component(.month, from: date)
         return month

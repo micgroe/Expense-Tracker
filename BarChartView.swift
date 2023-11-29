@@ -17,17 +17,17 @@ struct BarChartView: View {
     
     var body: some View {
         Chart {
-            ForEach(moneyManager.groupedBars, id: \.day) { expense in
-                BarMark(x: .value("Day", expense.day),
-                        y: .value("Expense", expense.expense)
-                )
-                .cornerRadius(3)
-                .foregroundStyle(currentActiveItem?.id == expense.id ? .green : .blue)
-                if let currentActiveItem, currentActiveItem.id == expense.id {
+            ForEach(moneyManager.getAggregatedDays(dateManager: dateManager), id: \.day) { bar in
+                BarMark(x: .value("Day", bar.day),
+                        y: .value("Expense", bar.expense))
+                    .cornerRadius(3)
+                    .foregroundStyle(currentActiveItem?.day == bar.day ? .green : .blue)
+                
+                if let currentActiveItem, currentActiveItem.day == bar.day {
                     RuleMark(x: .value("Day", currentActiveItem.day))
                         .annotation(position: .top) {
                             HStack(spacing: 6) {
-                                Text("\(currentActiveItem.day). \(Calendar.current.shortMonthSymbols[dateManager.currentMonth-1])")
+                                Text("\(bar.day). \(Calendar.current.shortMonthSymbols[dateManager.selectedMonth-1])")
                                 Spacer()
                                 Text(String(format: "%.2f EUR",currentActiveItem.expense))
                             }.padding(.horizontal, 7)
@@ -39,11 +39,12 @@ struct BarChartView: View {
                         }
                 }
             }
-        }.chartXScale(domain: [1, moneyManager.groupedBars.count])
-            .chartYScale(domain: [1, Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*1.1)])
-        .chartYAxis {
-            AxisMarks(values: [0, Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*0.36), Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*0.73), Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*1.1)])
         }
+        .chartXScale(domain: [1, 31]) //TODO: create function that calculates days of selected month
+        .chartYScale(domain: [1, (moneyManager.getMaxExpense(dateManager: dateManager) ?? 0)*1.1])
+//      .chartYAxis {
+//            AxisMarks(values: [0, Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*0.36), Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*0.73), Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*1.1)])
+//        }
         .chartXAxis {
             AxisMarks(values: .automatic(desiredCount: 6))
         }
@@ -57,8 +58,8 @@ struct BarChartView: View {
                                 let location = value.location
                                 
                                 if let day: Int = proxy.value(atX: location.x) {
-                                    if let currentItem = moneyManager.groupedBars.first(where: { item in
-                                        item.day == day
+                                    if let currentItem = moneyManager.getAggregatedDays(dateManager: dateManager).first(where: { item in
+                                            item.day == day
                                     }) {
                                         currentActiveItem = currentItem
                                         plotWidth = proxy.plotAreaSize.width

@@ -56,8 +56,11 @@ struct AddDebtView: View {
                             text: debtManager.debitors[index].name,
                             isSelected: selectedIdx == index,
                             onTap: {
-                                selectedIdx = (selectedIdx == index) ? nil : index
-                                selectedDebitor = debtManager.debitors[selectedIdx!].name
+                                if selectedIdx != index {
+                                    selectedIdx = (selectedIdx == index) ? nil : index
+                                    selectedDebitor = debtManager.debitors[selectedIdx!].name
+                                }
+
                             }
                         )
                     }
@@ -66,6 +69,7 @@ struct AddDebtView: View {
                     } else {
                         Button("New debitor") {
                             isEditing.toggle()
+                            selectedIdx = nil
                         }
                     }
                 }

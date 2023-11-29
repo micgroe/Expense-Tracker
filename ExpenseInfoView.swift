@@ -34,18 +34,18 @@ struct ExpenseInfoView: View {
                         Image(systemName: "chevron.left")
                             .padding(.leading, 40)
                             .onTapGesture {
-                                dateManager.currentMonth -= 1
+                                dateManager.selectedMonth -= 1
                                 moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "Expense")
                                 moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyExpenses, transactionType: "Expense")
                                 moneyManager.updateGroupedExpenses(dateManager.currentMonth, dateManager.currentYear)
                             }
                         Spacer()
-                        Text("\(dateManager.getMonthName(month: dateManager.currentMonth))").font(.system(size: 25, weight: .bold))
+                        Text("\(dateManager.getMonthName(month: dateManager.selectedMonth))").font(.system(size: 25, weight: .bold))
                         Spacer()
                         Image(systemName: "chevron.right")
                             .padding(.trailing, 40)
                             .onTapGesture {
-                                dateManager.currentMonth += 1
+                                dateManager.selectedMonth += 1
                                 moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "Expense")
                                 moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyExpenses, transactionType: "Expense")
                                 moneyManager.updateGroupedExpenses(dateManager.currentMonth, dateManager.currentYear)
@@ -57,7 +57,7 @@ struct ExpenseInfoView: View {
                                 Text("Expenses this month")
                                     .font(.system(size: 13))
                                     .padding(.top, 10)
-                                Text(String(format: "%.2f EUR", moneyManager.monthlyExpenseSum))
+                                Text(String(format: "%.2f EUR", moneyManager.getSelectedMonthSum(dateManager: dateManager)))
                                     .font(.system(size: 20, weight: .bold))
                                     .padding(.top, 4)
                             }
@@ -113,27 +113,63 @@ struct ExpenseInfoView: View {
                         .padding(.top)
                     
                 }.padding(.horizontal)
-                List {
-                    ForEach(moneyManager.monthlyExpenses, id: \.id) { transaction in
-                        HStack {
-                            Text("\(transaction.description)")
-                                .padding(.leading)
-                            Spacer()
-                            Text("- \(transaction.amount, specifier: "%.2f") EUR").foregroundColor(.red)
-                                .padding(.trailing)
-                        }
-                    }.onDelete { indexSet in
-                        for index in indexSet {
-                            let transactionIndex = moneyManager.transactions.firstIndex(of: moneyManager.monthlyExpenses[index])
-                            moneyManager.removeTransaction(at: transactionIndex!)
-                        }
-                        
-                        moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "Expense")
-                        moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyExpenses, transactionType: "Expense")
-                        moneyManager.updateGroupedExpenses(dateManager.currentMonth, dateManager.currentYear)
-                    }
+//                List {
+//                    ForEach(moneyManager.getCurrentMonthExpenses(dateManager: dateManager), id: \.id) { transaction in
+//                        HStack {
+//                            Text("\(transaction.description)")
+//                                .padding(.leading)
+//                            Spacer()
+//                            Text("- \(transaction.amount, specifier: "%.2f") EUR").foregroundColor(.red)
+//                                .padding(.trailing)
+//                        }
+//                    }.onDelete { indexSet in
+//                        for index in indexSet {
+//                            let transactionIndex = moneyManager.transactions.firstIndex(of: moneyManager.monthlyExpenses[index])
+//                            moneyManager.removeTransaction(at: transactionIndex!)
+//                        }
+//                        
+//                        moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "Expense")
+//                        moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyExpenses, transactionType: "Expense")
+//                        moneyManager.updateGroupedExpenses(dateManager.currentMonth, dateManager.currentYear)
 //                }
-            }
+//            }
+            VStack {
+                HStack {
+                    Text("All expenses")
+                        .font(.system(size: 25, weight: .bold))
+                        .padding(.leading, 9)
+                    Spacer()
+                }
+
+                ScrollView {
+                    ForEach(moneyManager.getAggregatedDays(dateManager: dateManager)) { day in
+                        HStack {
+                            Text("\(day.day) \(Calendar.current.shortMonthSymbols[dateManager.selectedMonth-1])")
+                                .foregroundColor(.gray)
+                                .padding(.leading, 15)
+                            Spacer()
+                        }.padding(.bottom, 5)
+                        VStack {
+                            ForEach(moneyManager.getCurrentDayExpenses(dateManager: dateManager, day: day.day), id: \.id) { transaction in
+                                HStack {
+                                    Text("\(transaction.description)")
+                                        .padding(.leading)
+                                    Spacer()
+                                    Text("- \(transaction.amount, specifier: "%.2f") EUR")
+                                        .foregroundColor(.red)
+                                        .padding(.trailing)
+                                }.padding(.vertical, 7)
+                                Divider()
+                                    .padding(.leading)
+                            }
+                        }.background {
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color(.secondarySystemBackground))
+                        }.padding(.bottom, 5)
+                    }
+                }
+            }.padding()
+            .edgesIgnoringSafeArea(.bottom)
         }
     }
 }
