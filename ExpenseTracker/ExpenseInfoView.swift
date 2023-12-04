@@ -10,6 +10,8 @@ import SwiftUI
 struct ExpenseInfoView: View {
     @ObservedObject var moneyManager: MoneyManager
     @ObservedObject var dateManager: DateManager
+    @ObservedObject var monthlyPaymentManager: MonthlyPaymentManager
+    @ObservedObject var categoryManager: CategoryManager
     
     let backgroundColor = Color(.systemBackground)
     let secondaryColor = Color(.secondarySystemBackground)
@@ -99,7 +101,7 @@ struct ExpenseInfoView: View {
                     }
                     VStack(alignment: .leading) {
                         HStack {
-                            NavigationLink(destination: MonthlyPaymentsView(moneyManager: moneyManager, dateManager: dateManager), isActive: $isShowingAddSubscriptionView) {
+                            NavigationLink(destination: MonthlyPaymentsView(monthlyPaymentManager: monthlyPaymentManager, dateManager: dateManager, categoryManager: categoryManager), isActive: $isShowingAddSubscriptionView) {
                                 Button("Manage monthly payments", action: {
                                     isShowingAddSubscriptionView.toggle()
                                 })
@@ -113,26 +115,6 @@ struct ExpenseInfoView: View {
                         .padding(.top)
                     
                 }.padding(.horizontal)
-//                List {
-//                    ForEach(moneyManager.getCurrentMonthExpenses(dateManager: dateManager), id: \.id) { transaction in
-//                        HStack {
-//                            Text("\(transaction.description)")
-//                                .padding(.leading)
-//                            Spacer()
-//                            Text("- \(transaction.amount, specifier: "%.2f") EUR").foregroundColor(.red)
-//                                .padding(.trailing)
-//                        }
-//                    }.onDelete { indexSet in
-//                        for index in indexSet {
-//                            let transactionIndex = moneyManager.transactions.firstIndex(of: moneyManager.monthlyExpenses[index])
-//                            moneyManager.removeTransaction(at: transactionIndex!)
-//                        }
-//                        
-//                        moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "Expense")
-//                        moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyExpenses, transactionType: "Expense")
-//                        moneyManager.updateGroupedExpenses(dateManager.currentMonth, dateManager.currentYear)
-//                }
-//            }
             VStack {
                 HStack {
                     Text("All expenses")
@@ -140,27 +122,27 @@ struct ExpenseInfoView: View {
                         .padding(.leading, 9)
                     Spacer()
                 }
-
                 ScrollView {
-                    ForEach(moneyManager.getAggregatedDays(dateManager: dateManager)) { day in
+                    ForEach(moneyManager.getAggregatedDays(dateManager: dateManager).sorted(by: { $0.day > $1.day } )) { day in
                         HStack {
                             Text("\(day.day) \(Calendar.current.shortMonthSymbols[dateManager.selectedMonth-1])")
                                 .foregroundColor(.gray)
-                                .padding(.leading, 15)
+                                .padding(.leading, 11)
                             Spacer()
-                        }.padding(.bottom, 5)
-                        VStack {
+                        }.padding(.bottom, -3)
+                        VStack(spacing: 0) {
                             ForEach(moneyManager.getCurrentDayExpenses(dateManager: dateManager, day: day.day), id: \.id) { transaction in
-                                HStack {
+                                HStack(alignment: .center) {
                                     Text("\(transaction.description)")
-                                        .padding(.leading)
                                     Spacer()
                                     Text("- \(transaction.amount, specifier: "%.2f") EUR")
                                         .foregroundColor(.red)
                                         .padding(.trailing)
-                                }.padding(.vertical, 7)
-                                Divider()
+                                }.padding(.vertical, 12)
                                     .padding(.leading)
+                                if transaction != moneyManager.getCurrentDayExpenses(dateManager: dateManager, day: day.day).last {
+                                    Divider()
+                                }
                             }
                         }.background {
                             RoundedRectangle(cornerRadius: 10)
@@ -176,6 +158,6 @@ struct ExpenseInfoView: View {
 
 struct ExpenseInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        ExpenseInfoView(moneyManager: MoneyManager(), dateManager: DateManager())
+        ExpenseInfoView(moneyManager: MoneyManager(), dateManager: DateManager(), monthlyPaymentManager: MonthlyPaymentManager(), categoryManager: CategoryManager())
     }
 }

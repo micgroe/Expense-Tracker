@@ -11,8 +11,7 @@ struct DebtInfoView: View {
     @ObservedObject var debtManager: DebtManager
     @ObservedObject var moneyManager: MoneyManager
     @ObservedObject var dateManager: DateManager
-    
-    @State private var testDebitors: [Debitor] = [Debitor(name: "Davis", debtAmount: 50, debts: [Transaction(amount: 20, date: Date(), category: "Car", description: "Test 1", icon: nil, type: "Debt"), Transaction(amount: 30, date: Date(), category: "Grocery", description: "Test 2", icon: nil, type: "Debt")]), Debitor(name: "Simon", debtAmount: 30, debts: [])]
+    @ObservedObject var categoryManager: CategoryManager
     
     var body: some View {
         VStack {
@@ -28,60 +27,59 @@ struct DebtInfoView: View {
                     .foregroundColor(Color.gray)
                     .padding(.top, 50)
             }
-            ForEach(debtManager.debitors, id: \.id) { debitor in
-                //        ForEach(testDebitors, id: \.id) { debitor in
-                VStack {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            HStack {
-                                Text(debitor.name).padding(.leading)
-                                Spacer()
-                                Text(String(format: "%.2f EUR", debitor.debtAmount))
-                                Image(systemName: debitor.isExpanded ? "chevron.down" : "chevron.right")
-                                    .padding(.horizontal)
+            VStack(spacing: 0) {
+                ForEach(debtManager.debitors, id: \.id) { debitor in
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text(debitor.name).padding(.leading)
+                            Spacer()
+                            Text(String(format: "%.2f EUR", debitor.debtAmount))
+                            Image(systemName: debitor.isExpanded ? "chevron.down" : "chevron.right")
+                                .padding(.horizontal)
+                        }.padding(.vertical, 2)
+                        .onTapGesture {
+                            withAnimation {
+                                debtManager.toggleDebitorExpansion(debitor)
                             }
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                withAnimation {
-                                    debtManager.toggleDebitorExpansion(debitor)
-                                }
-                            }
-                            if debitor.isExpanded {
-                                ForEach(debitor.debts, id: \.id) { transaction in
-                                    VStack {
-                                        if transaction == debitor.debts[0] {
-                                            Divider()
-                                        }
-                                        HStack {
-                                            Text(transaction.description)
-                                                .padding(.leading, 30)
-                                            Spacer()
-                                            Text(String(format: "%.2f EUR", transaction.amount))
-                                            Button(action: {
-                                                debtManager.debtPaid(transaction, from: debitor, moneyManager, dateManager)
-                                            }, label: {
-                                                Image(systemName: "creditcard.circle")
-                                            }).padding(.horizontal)
-                                        }
-                                        .padding(.bottom, 5)
-                                        if transaction != debitor.debts.last {
-                                            Divider()
-                                                .padding(.leading, 30)
-                                        }
+                        }
+                        if debitor.isExpanded {
+                            ForEach(debitor.debts, id: \.id) { transaction in
+                                VStack {
+                                    if transaction == debitor.debts[0] {
+                                        Divider()
+                                    }
+                                    HStack {
+                                        Text(transaction.description)
+                                            .padding(.leading, 30)
+                                        Spacer()
+                                        Text(String(format: "%.2f EUR", transaction.amount))
+                                        Button(action: {
+                                            debtManager.debtPaid(transaction, from: debitor, moneyManager, dateManager, categoryManager)
+                                        }, label: {
+                                            Image(systemName: "creditcard.circle")
+                                        }).padding(.horizontal)
+                                    }
+                                    .padding(.bottom, 5)
+                                    if transaction != debitor.debts.last {
+                                        Divider()
+                                            .padding(.leading, 30)
                                     }
                                 }
                             }
-                        }.padding(.leading, 5)
-                        .padding(.vertical, 10)
-                    }.background {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color(.secondarySystemBackground))
+                        }
+                    }.padding(.leading, 5)
+                    .padding(.vertical, 10)
+                    if debitor != debtManager.debitors.last {
+                        Divider()
                     }
-                    Divider()
-                }.padding(.horizontal)
-            }
-            Spacer()
+                }
+                
+            }.background {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color(.secondarySystemBackground))
+            }.padding(.horizontal)
         }
+        Spacer()
     }
 }
 
@@ -106,5 +104,5 @@ struct DebtItemView: View {
 }
 
 #Preview {
-    DebtInfoView(debtManager: DebtManager(), moneyManager: MoneyManager(), dateManager: DateManager())
+    DebtInfoView(debtManager: DebtManager(), moneyManager: MoneyManager(), dateManager: DateManager(), categoryManager: CategoryManager())
 }

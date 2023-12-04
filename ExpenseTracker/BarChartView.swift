@@ -41,7 +41,7 @@ struct BarChartView: View {
             }
         }
         .chartXScale(domain: [1, 31]) //TODO: create function that calculates days of selected month
-        .chartYScale(domain: [1, (moneyManager.getMaxExpense(dateManager: dateManager) ?? 0)*1.1])
+        .chartYScale(domain: [0, (moneyManager.getMaxExpense(dateManager: dateManager) ?? 0)*1.1])
 //      .chartYAxis {
 //            AxisMarks(values: [0, Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*0.36), Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*0.73), Int(round(moneyManager.groupedExpenses.values.max() ?? 0)*1.1)])
 //        }

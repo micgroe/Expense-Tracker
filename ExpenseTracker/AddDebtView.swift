@@ -77,18 +77,19 @@ struct AddDebtView: View {
                     LazyVGrid(columns: Array(repeating: .init(.flexible()), count: itemsPerRow), spacing: 16)  {
                         ForEach(categories.sorted(by: { $0.key < $1.key }), id: \.key) { (key, value) in
                             VStack {
-                                Image(systemName: value)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                Text(key)
-                                    .font(.system(size: 13))
-                            }.frame(width: 55, height: 55)
-                                .background(selectedItem == key ? Color.blue.opacity(0.7) : Color.clear)
-                                .onTapGesture {
-                                    selectedItem = key
-                                    selectedItemIcon = value
-                                }.cornerRadius(5)
-                                .padding(5)
+                                VStack {
+                                    Image(systemName: value)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                    Text(key)
+                                        .font(.system(size: 13))
+                                }.frame(width: 55, height: 55)
+                            }.frame(width: 75, height: 75)
+                            .background(selectedItem == key ? Color.blue.opacity(0.9) : Color.clear)
+                            .onTapGesture {
+                                selectedItem = key
+                                selectedItemIcon = value
+                            }.cornerRadius(5)
                         }
                     }
                 }

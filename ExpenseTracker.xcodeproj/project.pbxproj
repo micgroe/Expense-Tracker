@@ -21,13 +21,19 @@
 		0640C2892AADE48F0090A525 /* PieSliceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0640C2882AADE48F0090A525 /* PieSliceView.swift */; };
 		0640C28C2AADE90C0090A525 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0640C28B2AADE90C0090A525 /* PieChartView.swift */; };
 		0640C28F2AAE22840090A525 /* AddExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0640C28E2AAE22840090A525 /* AddExpenseView.swift */; };
+		0676EA732B17656800DD7A32 /* IncomeManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0676EA722B17656800DD7A32 /* IncomeManagerClass.swift */; };
+		0676EA752B176C4200DD7A32 /* IncomeComparisonChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0676EA742B176C4200DD7A32 /* IncomeComparisonChart.swift */; };
+		0676EA772B177AC200DD7A32 /* IncomeInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0676EA762B177AC200DD7A32 /* IncomeInfoView.swift */; };
+		0676EA792B190E6B00DD7A32 /* CategoryManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0676EA782B190E6B00DD7A32 /* CategoryManagerClass.swift */; };
+		0676EA7B2B1A635F00DD7A32 /* CategoryEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0676EA7A2B1A635F00DD7A32 /* CategoryEditView.swift */; };
+		0676EA7D2B1B5CEB00DD7A32 /* MonthlyPaymentManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0676EA7C2B1B5CEB00DD7A32 /* MonthlyPaymentManagerClass.swift */; };
+		0676EA832B1DFC8500DD7A32 /* LimitBarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0676EA822B1DFC8500DD7A32 /* LimitBarChart.swift */; };
 		06A281E42B04F7EB00F1F151 /* DebtInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A281E32B04F7EB00F1F151 /* DebtInfoView.swift */; };
 		06A281E62B04F86200F1F151 /* DebtManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A281E52B04F86200F1F151 /* DebtManagerClass.swift */; };
 		06A281E82B04FD8D00F1F151 /* AddDebtView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A281E72B04FD8D00F1F151 /* AddDebtView.swift */; };
 		06C7D5CB2AC07DB10083F83E /* ExpenseComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C7D5CA2AC07DB10083F83E /* ExpenseComparisonView.swift */; };
 		06D9A5552AC6264300DA8921 /* ComparisonBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D9A5542AC6264300DA8921 /* ComparisonBarChartView.swift */; };
 		06D9A5572ACC53DB00DA8921 /* MonthlyPaymentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D9A5562ACC53DB00DA8921 /* MonthlyPaymentsView.swift */; };
-		06D9A5592ACC69E300DA8921 /* AddSubsctiptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D9A5582ACC69E300DA8921 /* AddSubsctiptionView.swift */; };
 		06E666252AAF85AB00434EE4 /* MoneyManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E666242AAF85AB00434EE4 /* MoneyManagerClass.swift */; };
 		06E666282AB1C82F00434EE4 /* FilterExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E666272AB1C82F00434EE4 /* FilterExpenseView.swift */; };
 /* End PBXBuildFile section */
@@ -49,13 +55,19 @@
 		0640C2882AADE48F0090A525 /* PieSliceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieSliceView.swift; sourceTree = "<group>"; };
 		0640C28B2AADE90C0090A525 /* PieChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
 		0640C28E2AAE22840090A525 /* AddExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseView.swift; sourceTree = "<group>"; };
+		0676EA722B17656800DD7A32 /* IncomeManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeManagerClass.swift; sourceTree = "<group>"; };
+		0676EA742B176C4200DD7A32 /* IncomeComparisonChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeComparisonChart.swift; sourceTree = "<group>"; };
+		0676EA762B177AC200DD7A32 /* IncomeInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeInfoView.swift; sourceTree = "<group>"; };
+		0676EA782B190E6B00DD7A32 /* CategoryManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryManagerClass.swift; sourceTree = "<group>"; };
+		0676EA7A2B1A635F00DD7A32 /* CategoryEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryEditView.swift; sourceTree = "<group>"; };
+		0676EA7C2B1B5CEB00DD7A32 /* MonthlyPaymentManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyPaymentManagerClass.swift; sourceTree = "<group>"; };
+		0676EA822B1DFC8500DD7A32 /* LimitBarChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitBarChart.swift; sourceTree = "<group>"; };
 		06A281E32B04F7EB00F1F151 /* DebtInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebtInfoView.swift; sourceTree = "<group>"; };
 		06A281E52B04F86200F1F151 /* DebtManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebtManagerClass.swift; sourceTree = "<group>"; };
 		06A281E72B04FD8D00F1F151 /* AddDebtView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDebtView.swift; sourceTree = "<group>"; };
 		06C7D5CA2AC07DB10083F83E /* ExpenseComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseComparisonView.swift; sourceTree = "<group>"; };
 		06D9A5542AC6264300DA8921 /* ComparisonBarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComparisonBarChartView.swift; sourceTree = "<group>"; };
 		06D9A5562ACC53DB00DA8921 /* MonthlyPaymentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyPaymentsView.swift; sourceTree = "<group>"; };
-		06D9A5582ACC69E300DA8921 /* AddSubsctiptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSubsctiptionView.swift; sourceTree = "<group>"; };
 		06E666242AAF85AB00434EE4 /* MoneyManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyManagerClass.swift; sourceTree = "<group>"; };
 		06E666272AB1C82F00434EE4 /* FilterExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterExpenseView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -74,9 +86,6 @@
 		0640C2672AAD3E8F0090A525 = {
 			isa = PBXGroup;
 			children = (
-				0636FAE82ABB5F8800745795 /* BarChartView.swift */,
-				0636FAEA2ABB8EE400745795 /* ExpenseInfoView.swift */,
-				06C7D5CA2AC07DB10083F83E /* ExpenseComparisonView.swift */,
 				0636FAE42ABA51BD00745795 /* Tests.swift */,
 				0640C2722AAD3E8F0090A525 /* ExpenseTracker */,
 				0640C2712AAD3E8F0090A525 /* Products */,
@@ -94,19 +103,15 @@
 		0640C2722AAD3E8F0090A525 /* ExpenseTracker */ = {
 			isa = PBXGroup;
 			children = (
-				06E666272AB1C82F00434EE4 /* FilterExpenseView.swift */,
 				0640C2732AAD3E8F0090A525 /* AppDelegate.swift */,
+				06E666272AB1C82F00434EE4 /* FilterExpenseView.swift */,
+				0636FAE82ABB5F8800745795 /* BarChartView.swift */,
 				0640C2752AAD3E8F0090A525 /* SceneDelegate.swift */,
-				0636FAE62ABB24F000745795 /* AddIncomeView.swift */,
 				0640C2772AAD3E8F0090A525 /* ContentView.swift */,
-				06A281E32B04F7EB00F1F151 /* DebtInfoView.swift */,
-				06A281E52B04F86200F1F151 /* DebtManagerClass.swift */,
-				06A281E72B04FD8D00F1F151 /* AddDebtView.swift */,
-				06D9A5562ACC53DB00DA8921 /* MonthlyPaymentsView.swift */,
-				06D9A5582ACC69E300DA8921 /* AddSubsctiptionView.swift */,
-				06D9A5542AC6264300DA8921 /* ComparisonBarChartView.swift */,
-				0640C28E2AAE22840090A525 /* AddExpenseView.swift */,
-				06E666242AAF85AB00434EE4 /* MoneyManagerClass.swift */,
+				0676EA812B1CD4A900DD7A32 /* Income */,
+				0676EA7E2B1CD3F900DD7A32 /* Expenses */,
+				0676EA7F2B1CD43B00DD7A32 /* Debts */,
+				0676EA802B1CD46000DD7A32 /* Categories */,
 				0607078D2AB67F9F00127E1C /* DateManagerClass.swift */,
 				0640C2882AADE48F0090A525 /* PieSliceView.swift */,
 				0640C28B2AADE90C0090A525 /* PieChartView.swift */,
@@ -124,6 +129,51 @@
 				0640C27C2AAD3EB10090A525 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		0676EA7E2B1CD3F900DD7A32 /* Expenses */ = {
+			isa = PBXGroup;
+			children = (
+				0676EA7C2B1B5CEB00DD7A32 /* MonthlyPaymentManagerClass.swift */,
+				06D9A5562ACC53DB00DA8921 /* MonthlyPaymentsView.swift */,
+				0636FAEA2ABB8EE400745795 /* ExpenseInfoView.swift */,
+				0640C28E2AAE22840090A525 /* AddExpenseView.swift */,
+				06E666242AAF85AB00434EE4 /* MoneyManagerClass.swift */,
+				06C7D5CA2AC07DB10083F83E /* ExpenseComparisonView.swift */,
+			);
+			name = Expenses;
+			sourceTree = "<group>";
+		};
+		0676EA7F2B1CD43B00DD7A32 /* Debts */ = {
+			isa = PBXGroup;
+			children = (
+				06A281E32B04F7EB00F1F151 /* DebtInfoView.swift */,
+				06A281E72B04FD8D00F1F151 /* AddDebtView.swift */,
+				06A281E52B04F86200F1F151 /* DebtManagerClass.swift */,
+			);
+			name = Debts;
+			sourceTree = "<group>";
+		};
+		0676EA802B1CD46000DD7A32 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				0676EA7A2B1A635F00DD7A32 /* CategoryEditView.swift */,
+				0676EA782B190E6B00DD7A32 /* CategoryManagerClass.swift */,
+				0676EA822B1DFC8500DD7A32 /* LimitBarChart.swift */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
+		0676EA812B1CD4A900DD7A32 /* Income */ = {
+			isa = PBXGroup;
+			children = (
+				06D9A5542AC6264300DA8921 /* ComparisonBarChartView.swift */,
+				0676EA762B177AC200DD7A32 /* IncomeInfoView.swift */,
+				0676EA742B176C4200DD7A32 /* IncomeComparisonChart.swift */,
+				0676EA722B17656800DD7A32 /* IncomeManagerClass.swift */,
+				0636FAE62ABB24F000745795 /* AddIncomeView.swift */,
+			);
+			name = Income;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,18 +249,24 @@
 				06A281E62B04F86200F1F151 /* DebtManagerClass.swift in Sources */,
 				0640C2742AAD3E8F0090A525 /* AppDelegate.swift in Sources */,
 				0636FAE52ABA51BD00745795 /* Tests.swift in Sources */,
+				0676EA772B177AC200DD7A32 /* IncomeInfoView.swift in Sources */,
 				06C7D5CB2AC07DB10083F83E /* ExpenseComparisonView.swift in Sources */,
 				0636FAEB2ABB8EE400745795 /* ExpenseInfoView.swift in Sources */,
 				0607078E2AB67F9F00127E1C /* DateManagerClass.swift in Sources */,
 				0640C28C2AADE90C0090A525 /* PieChartView.swift in Sources */,
 				0640C2762AAD3E8F0090A525 /* SceneDelegate.swift in Sources */,
 				06E666282AB1C82F00434EE4 /* FilterExpenseView.swift in Sources */,
+				0676EA732B17656800DD7A32 /* IncomeManagerClass.swift in Sources */,
 				06D9A5552AC6264300DA8921 /* ComparisonBarChartView.swift in Sources */,
+				0676EA792B190E6B00DD7A32 /* CategoryManagerClass.swift in Sources */,
 				0640C28F2AAE22840090A525 /* AddExpenseView.swift in Sources */,
+				0676EA7D2B1B5CEB00DD7A32 /* MonthlyPaymentManagerClass.swift in Sources */,
+				0676EA752B176C4200DD7A32 /* IncomeComparisonChart.swift in Sources */,
+				0676EA832B1DFC8500DD7A32 /* LimitBarChart.swift in Sources */,
 				0640C2892AADE48F0090A525 /* PieSliceView.swift in Sources */,
 				06A281E42B04F7EB00F1F151 /* DebtInfoView.swift in Sources */,
+				0676EA7B2B1A635F00DD7A32 /* CategoryEditView.swift in Sources */,
 				06D9A5572ACC53DB00DA8921 /* MonthlyPaymentsView.swift in Sources */,
-				06D9A5592ACC69E300DA8921 /* AddSubsctiptionView.swift in Sources */,
 				0640C2782AAD3E8F0090A525 /* ContentView.swift in Sources */,
 				06E666252AAF85AB00434EE4 /* MoneyManagerClass.swift in Sources */,
 				0636FAE72ABB24F000745795 /* AddIncomeView.swift in Sources */,

@@ -38,14 +38,14 @@ class DebtManager: ObservableObject {
         saveDebts()
     }
     
-    func debtPaid(_ transaction: Transaction, from debitor: Debitor, _ moneyManager: MoneyManager, _ dateManager: DateManager){
+    func debtPaid(_ transaction: Transaction, from debitor: Debitor, _ moneyManager: MoneyManager, _ dateManager: DateManager, _ categoryManager: CategoryManager){
         if let debitorIndex = debitors.firstIndex(of: debitor) {
             if let transactionIndex = debitor.debts.firstIndex(where: { $0.id == transaction.id }) {
                 debitors[debitorIndex].debts.remove(at: transactionIndex)
                 removeTotalDebts(amount: transaction.amount)
                 debitors[debitorIndex].debtAmount -= transaction.amount
                 
-                moneyManager.addTransaction(Transaction(amount: transaction.amount, date: Date(), category: transaction.category, description: transaction.description, icon: transaction.icon, type: transaction.type))
+                moneyManager.addTransaction(Transaction(amount: transaction.amount, date: Date(), category: transaction.category, description: transaction.description, icon: transaction.icon, type: transaction.type), categoryManager: categoryManager)
                 
             }
 

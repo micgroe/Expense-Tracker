@@ -36,20 +36,16 @@ class MoneyManager: ObservableObject {
     @Published var categoryTotals: [CategoryTotal] = []
     @Published var totalAmount: Double = 0.0
     
-    
     @Published var filteredSixMonths: [Transaction] = []
-    
-    @Published var monthlySubscriptions: [Subscription] = []
     
     init() {
         // Load transactions from UserDefaults when initializing the manager
         loadAllTransactions()
-        loadSubscriptions()
     }
     
-    
-    func addTransaction(_ transaction: Transaction) {
+    func addTransaction(_ transaction: Transaction, categoryManager: CategoryManager) {
         transactions.append(transaction)
+        categoryManager.addCategorySum(name: transaction.category!, amount: transaction.amount) //TODO: force unwrap transaction.category should be able to be removed later
         saveAllTransactions()
     }
     
@@ -116,6 +112,30 @@ class MoneyManager: ObservableObject {
         return maxTransaction.expense
     }
     
+    func getAggregatedMonths(months: Int, dateManager: DateManager) -> [Bar] {
+        var aggregatedTransactions: [Int: Double] = [:]
+        let calendar = Calendar.current
+        var currentMonth = dateManager.currentMonth
+        
+        for _ in 1...months {
+            let currentExpenses = transactions.filter { transaction in
+                let componentMonth = calendar.component(.month, from: transaction.date)
+                return componentMonth == currentMonth
+            }
+            for transaction in currentExpenses {
+                let month = calendar.component(.month, from: transaction.date)
+                aggregatedTransactions[month, default: 0] += transaction.amount
+            }
+            currentMonth -= 1
+        }
+        
+        var result = aggregatedTransactions.map { (day, totalAmount) in
+            return Bar(day: day, expense: totalAmount)
+        }
+        
+        result = result.sorted { $0.day < $1.day }
+        return result
+    }
     
 //    Old functions
     func updateMonthlyTransactions(selectedMonth: Int, selectedYear: Int, transactionType: String) {
@@ -207,10 +227,7 @@ class MoneyManager: ObservableObject {
         }
         return sixMonthExpenses
     }
-    
 
-    
-    
     func updateGroupedSixMonthBars(sixMonthExpenses: [[Transaction]]) {
         sixMonthGroupedBars = []
         var groupedSixMonths: [Int: Double] = [:]
@@ -233,7 +250,6 @@ class MoneyManager: ObservableObject {
             sixMonthGroupedBars.append(Bar(day: expense.key, expense: expense.value))
         }
     }
-    
     
     func getMonthlyExpenseSum(_ month: Int, _ year: Int) -> Double {
         let monthlyTransactions = transactions.filter { transaction in
@@ -449,54 +465,6 @@ class MoneyManager: ObservableObject {
             totalAmount += expense.amount
         }
     }
-    func addSubscription(subscription: Subscription) {
-        monthlySubscriptions.append(subscription)
-        saveSubscriptions()
-    }
-    
-    func addSubscriptionToTransactions() {
-        let calendar = Calendar.current
-        let now = Date()
-        
-        // Get the current date components
-        let currentDateComponents = calendar.dateComponents([.year, .month], from: now)
-        
-        // Calculate the date for the start of the next month
-        guard let nextMonthDate = calendar.date(from: currentDateComponents),
-              let oneMonthFromNow = calendar.date(byAdding: .month, value: 1, to: nextMonthDate),
-              let firstDayOfNextMonth = calendar.date(bySetting: .day, value: 1, of: oneMonthFromNow) else {
-            return
-        }
-        
-        
-        // Calculate the time interval until the start of the next month
-        let timeInterval = firstDayOfNextMonth.timeIntervalSince(now)
-        
-        for subscription in monthlySubscriptions {
-            let transaction = Transaction(amount: subscription.amount, date: now, category: subscription.category, description: subscription.description, icon: subscription.icon, type: "Expense")
-            
-            // Create a timer to execute the task
-            let timer = Timer(timeInterval: timeInterval, repeats: false) { (timer) in
-                self.addTransaction(transaction)
-            }
-            // Add the timer to the main run loop
-            RunLoop.main.add(timer, forMode: .common)
-        }
-    }
-        
-    
-    private func loadSubscriptions() {
-        if let savedSubscriptionData = UserDefaults.standard.data(forKey: "subscription"),
-           let savedSubscriptions = try? JSONDecoder().decode([Subscription].self, from: savedSubscriptionData) {
-            monthlySubscriptions = savedSubscriptions
-        }
-    }
-    
-    private func saveSubscriptions() {
-        if let encodedSubscriptions = try? JSONEncoder().encode(monthlySubscriptions) {
-            UserDefaults.standard.set(encodedSubscriptions, forKey: "subscription")
-        }
-    }
     
 }
 
@@ -514,14 +482,6 @@ struct CategoryTotal: Identifiable {
     let id = UUID()
     let category: String
     var totalAmount: Double
-    let icon: String
-}
-
-struct Subscription: Identifiable, Codable {
-    let id = UUID()
-    let amount: Double
-    let description: String
-    let category: String
     let icon: String
 }
 
