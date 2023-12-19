@@ -49,17 +49,17 @@ struct DebtInfoView: View {
                                         Divider()
                                     }
                                     HStack {
-                                        Text(transaction.description)
-                                            .padding(.leading, 30)
-                                        Spacer()
-                                        Text(String(format: "%.2f EUR", transaction.amount))
                                         Button(action: {
                                             debtManager.debtPaid(transaction, from: debitor, moneyManager, dateManager, categoryManager)
                                         }, label: {
                                             Image(systemName: "creditcard.circle")
-                                        }).padding(.horizontal)
+                                        }).padding(.leading, 9)
+                                        Text(transaction.description)
+                                        Spacer()
+                                        Text(String(format: "%.2f EUR", transaction.amount))
+                                            .padding(.trailing)
                                     }
-                                    .padding(.bottom, 5)
+                                    .padding(.vertical, 2)
                                     if transaction != debitor.debts.last {
                                         Divider()
                                             .padding(.leading, 30)

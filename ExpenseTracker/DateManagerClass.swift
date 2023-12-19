@@ -19,6 +19,28 @@ class DateManager: ObservableObject {
         return month
     }
     
+    
+    func updateSelectedMonth(operation: String) {
+        switch operation {
+        case "Add":
+            if selectedMonth != 12 {
+                selectedMonth += 1
+            } else {
+                selectedMonth = 1
+                selectedYear += 1
+            }
+        case "Sub":
+            if selectedMonth != 1 {
+                selectedMonth -= 1
+            } else {
+                selectedMonth = 12
+                selectedYear -= 1
+            }
+        default:
+            print("Wrong operation")
+        }
+    }
+    
     func getYearFromDate(date: Date) -> Int {
         let year = Calendar.current.component(.year, from: date)
         return year

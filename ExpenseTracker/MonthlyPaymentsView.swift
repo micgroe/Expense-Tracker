@@ -23,8 +23,8 @@ struct MonthlyPaymentsView: View {
     
     var body: some View {
         Form {
-            if !monthlyPaymentManager.monthlyPayments.isEmpty {
-                Section(header: Text("current Payments")) {
+            Section(header: Text("current Payments")) {
+                if !monthlyPaymentManager.monthlyPayments.isEmpty {
                     List {
                         ForEach(monthlyPaymentManager.monthlyPayments, id: \.id) { payment in
                             HStack {
@@ -39,6 +39,9 @@ struct MonthlyPaymentsView: View {
                             }
                         }
                     }
+                } else {
+                    Text("No monthly payments added yet!")
+                        .backgroundStyle(Color(.systemBackground))
                 }
             }
             Section(header: Text("add monthly Payment")) {

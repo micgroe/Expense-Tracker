@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CategoryEditView: View {
+struct AddLimitView: View {
     @ObservedObject var categoryManager: CategoryManager
     
     @State var selectedCategory: String? = nil
@@ -75,13 +75,10 @@ struct CategoryEditView: View {
                     }
                 }
             }
-        }.navigationBarItems(
-            leading: Button("Cancel") {
-                presentationMode.wrappedValue.dismiss()
-            })
+        }
     }
 }
 
 #Preview {
-    CategoryEditView(categoryManager: CategoryManager())
+    AddLimitView(categoryManager: CategoryManager())
 }

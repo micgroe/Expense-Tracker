@@ -10,30 +10,46 @@ import Charts
 
 struct LimitBarChart: View {
     @ObservedObject var categoryManager: CategoryManager
+    @ObservedObject var moneyManager: MoneyManager
+    @ObservedObject var dateManager: DateManager
+    var category: String
+    
+    var displayedMonths: Int
     
     var body: some View {
         Chart {
-            ForEach(categoryManager.getCategoryBar(maxLimits: categoryManager.categoryLimits, currentLimits: categoryManager.categorySums), id: \.id) { limit in
+            ForEach(categoryManager.getCategoryBars(moneyManager: moneyManager, category: category, months: displayedMonths, month: dateManager.selectedMonth, year: dateManager.selectedYear).sorted(by: { $0.month < $1.month }), id: \.id) { limit in
                 
-                let isExceeded = categoryManager.limitIsExceeded(maxLimit: limit.maxLimit, currentLimit: limit.currentLimit)
-                
-                BarMark(x: isExceeded ? .value("EUR", limit.maxLimit) : .value("EUR", limit.currentLimit),
-                        y: .value("Category", limit.category))
+                BarMark(x: .value("Month", limit.formattedDate),
+                        y: .value("EUR", limit.currentLimit),
+                        width: MarkDimension(floatLiteral: 20))
                 .foregroundStyle(.red)
-            }
-            ForEach(categoryManager.getCategoryBar(maxLimits: categoryManager.categoryLimits, currentLimits: categoryManager.categorySums), id: \.id) { limit in
                 
-                let isExceeded = categoryManager.limitIsExceeded(maxLimit: limit.maxLimit, currentLimit: limit.currentLimit)
-                
-                BarMark(x: isExceeded ? .value("EUR", limit.maxLimit - limit.currentLimit) : .value("EUR", limit.currentLimit - limit.maxLimit),
-                        y: .value("Category", limit.category))
-                    .cornerRadius(3)
-                    .foregroundStyle(isExceeded ? .gray : .white)
+                RuleMark(y: .value("EUR", categoryManager.getAverage(categoryBars: categoryManager.getCategoryBars(moneyManager: moneyManager, category: category, months: displayedMonths, month: dateManager.selectedMonth, year: dateManager.selectedYear))))
+                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 10]))
+                    .foregroundStyle(.green)
+                    .annotation(position: .trailing) {
+                        Text("avg")
+                            .font(.system(size: 13))
+                            .foregroundColor(.green)
+                        
+                    }
+                RuleMark(y: .value("EUR", limit.maxLimit))
+                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 10]))
+                    .annotation(position: .trailing) {
+                        Text("limit")
+                            .font(.system(size: 12))
+                            .foregroundColor(.blue)
+                    }
             }
-        }.frame(height: 150)
+        }
+        .chartYScale(domain: [0, categoryManager.getYAxis(categoryBars: categoryManager.getCategoryBars(moneyManager: moneyManager, category: category, months: displayedMonths, month: dateManager.selectedMonth, year: dateManager.selectedYear))])
+        .chartYAxis {
+            AxisMarks(values: [0])
+        }
     }
 }
 
 #Preview {
-    LimitBarChart(categoryManager: CategoryManager())
+    LimitBarChart(categoryManager: CategoryManager(), moneyManager: MoneyManager(), dateManager: DateManager(), category: "Alcohol", displayedMonths: 3)
 }

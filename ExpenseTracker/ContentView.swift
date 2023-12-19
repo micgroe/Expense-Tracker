@@ -74,16 +74,18 @@ struct ContentView: View {
                                 Text("Limits")
                                     .font(.system(size: 22, weight: .bold))
                                 Spacer()
-                                Button("Edit") {
-                                    isShowingCategoryEdit.toggle()
-                                }.padding(.trailing)
+                                NavigationLink(destination: CategoryInfoView(categoryManager: categoryManager, moneyManager: moneyManager, dateManager: dateManager), isActive: $isShowingCategoryEdit) {
+                                    Button("Edit") {
+                                        isShowingCategoryEdit.toggle()
+                                    }.padding(.trailing)
+                                }
                             }
                             if !categoryManager.categoryLimits.isEmpty {
                                 ScrollView {
                                     ForEach(categoryManager.categoryLimits.sorted(by: { $0.key < $1.key }), id: \.key) { (category, limit) in
 //                                    ForEach(categoryManager.categoryLimits.sortedKeysAndValues(by: { ($0.value - categoryManager.categorySums[$0.key]) < ($1.value - categoryManager.categorySums[$1.key]) }), id: \.key) { (category, limit) in
 //                             TODO: Sort by remaining limit
-                                        CategoryLimitView(categoryManager: categoryManager, category: category, screenWidth: screenWidth)
+                                        CategoryLimitView(categoryManager: categoryManager, moneyManager: moneyManager, category: category, screenWidth: screenWidth)
                                     }
                                 }
                             } else {
@@ -174,11 +176,6 @@ struct ContentView: View {
                     AddExpenseView(moneyManager: moneyManager, dateManager: dateManager, categoryManager: categoryManager, selectedOption: selectedOption)
                 }
             })
-            .sheet(isPresented: $isShowingCategoryEdit, content: {
-                NavigationView {
-                    CategoryEditView(categoryManager: categoryManager)
-                }
-            })
             .sheet(isPresented: $showingAddIncomeSheet, content: {
                 NavigationView {
                     AddIncomeView(moneyManager: moneyManager, dateManager: dateManager, incomeManager: incomeManager)
@@ -240,7 +237,8 @@ struct RectView: View {
 }
 
 struct CategoryLimitView: View {
-    let categoryManager: CategoryManager
+    @ObservedObject var categoryManager: CategoryManager
+    @ObservedObject var moneyManager: MoneyManager
     let category: String
     let screenWidth: Double
     let maxPercent = 0.51
@@ -267,10 +265,10 @@ struct CategoryLimitView: View {
     
     var body: some View {
         let maxLimit = categoryManager.categoryLimits[category]
-        let currentLimit = categoryManager.categorySums[category]
-        let currentAmountLine = categoryManager.calcLimitPercentage(category: category, limit: maxLimit!)
+        let currentLimit = categoryManager.getCurrentMonthCategorySum(moneyManager: moneyManager, category: category)
+        let currentAmountLine = categoryManager.calcLimitPercentage(moneyManager: moneyManager, category: category, limit: maxLimit ?? 0)
         let categoryIcon = categoryManager.categoryIcons[category]!
-        let remainingLimit = categoryManager.getRemainingLimit(maxLimit: maxLimit!, currentLimit: currentLimit ?? 0)
+        let remainingLimit = categoryManager.getRemainingLimit(maxLimit: maxLimit ?? 0, currentLimit: currentLimit)
         
         HStack {
             VStack{

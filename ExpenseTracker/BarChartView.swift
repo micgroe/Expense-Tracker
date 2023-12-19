@@ -17,27 +17,36 @@ struct BarChartView: View {
     
     var body: some View {
         Chart {
-            ForEach(moneyManager.getAggregatedDays(dateManager: dateManager), id: \.day) { bar in
-                BarMark(x: .value("Day", bar.day),
-                        y: .value("Expense", bar.expense))
-                    .cornerRadius(3)
-                    .foregroundStyle(currentActiveItem?.day == bar.day ? .green : .blue)
-                
-                if let currentActiveItem, currentActiveItem.day == bar.day {
-                    RuleMark(x: .value("Day", currentActiveItem.day))
-                        .annotation(position: .top) {
-                            HStack(spacing: 6) {
-                                Text("\(bar.day). \(Calendar.current.shortMonthSymbols[dateManager.selectedMonth-1])")
-                                Spacer()
+            if !moneyManager.getAggregatedDays(dateManager: dateManager).isEmpty {
+                ForEach(moneyManager.getAggregatedDays(dateManager: dateManager), id: \.day) { bar in
+                    BarMark(x: .value("Day", bar.day),
+                            y: .value("Expense", bar.expense))
+                        .cornerRadius(3)
+                        .foregroundStyle(currentActiveItem?.day == bar.day ? .green : .blue)
+                    
+                    if let currentActiveItem, currentActiveItem.day == bar.day {
+                        RuleMark(x: .value("Day", currentActiveItem.day))
+                            .annotation(position: .top) {
+                                HStack(spacing: 6) {
+                                    Text("\(bar.day). \(Calendar.current.shortMonthSymbols[dateManager.selectedMonth-1])")
+                                    Spacer()
                                 Text(String(format: "%.2f EUR",currentActiveItem.expense))
                             }.padding(.horizontal, 7)
                                 .padding(.vertical, 7)
-                            .background{
-                                RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                    .fill(.green)
+                                .background{
+                                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                        .fill(.green)
                             }
                         }
+                    }
                 }
+            } else {
+                RuleMark(y: .value("Test", 0))
+                    .annotation {
+                        Text("No expenses added yet!")
+                            .font(.footnote)
+                            .foregroundStyle(.white)
+                    }.foregroundStyle(Color(.secondarySystemBackground))
             }
         }
         .chartXScale(domain: [1, 31]) //TODO: create function that calculates days of selected month

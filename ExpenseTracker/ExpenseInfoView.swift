@@ -36,10 +36,8 @@ struct ExpenseInfoView: View {
                         Image(systemName: "chevron.left")
                             .padding(.leading, 40)
                             .onTapGesture {
-                                dateManager.selectedMonth -= 1
-                                moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "Expense")
-                                moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyExpenses, transactionType: "Expense")
-                                moneyManager.updateGroupedExpenses(dateManager.currentMonth, dateManager.currentYear)
+                                let add = "Sub"
+                                dateManager.updateSelectedMonth(operation: add)
                             }
                         Spacer()
                         Text("\(dateManager.getMonthName(month: dateManager.selectedMonth))").font(.system(size: 25, weight: .bold))
@@ -47,10 +45,8 @@ struct ExpenseInfoView: View {
                         Image(systemName: "chevron.right")
                             .padding(.trailing, 40)
                             .onTapGesture {
-                                dateManager.selectedMonth += 1
-                                moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "Expense")
-                                moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyExpenses, transactionType: "Expense")
-                                moneyManager.updateGroupedExpenses(dateManager.currentMonth, dateManager.currentYear)
+                                let add = "Add"
+                                dateManager.updateSelectedMonth(operation: add)
                             }
                     }
                     VStack {
@@ -65,7 +61,7 @@ struct ExpenseInfoView: View {
                             }
                             .padding(.leading)
                             Spacer()
-                            if let percentChange = moneyManager.getPercentageDifference(dateManager.currentMonth, dateManager.currentYear) {
+                            if let percentChange = moneyManager.getPercentageDifference(dateManager.selectedMonth, dateManager.selectedYear) {
                                 Image(systemName: percentChange > 0 ? "arrow.down.circle" : "arrow.up.circle")
                                     .foregroundColor(Color.gray)
                                 Text("\(Int(round(percentChange)))% from last month")
@@ -79,22 +75,19 @@ struct ExpenseInfoView: View {
                             .padding(.bottom)
                         Divider()
                             .padding(.leading)
-                        HStack {
-                                NavigationLink(destination: ExpenseComparisonView(moneyManager: moneyManager, dateManager: dateManager), isActive: $isShowingComparisonView) {
-                                        Button("See more info", action: {
-                                            moneyManager.updateFilteredSixMonthExpenses(dateManager.currentMonth, dateManager.currentYear)
-                                            moneyManager.updateCategoryTotals(transactions: moneyManager.filteredSixMonths)
-                                            moneyManager.updateTotalAmount(transactions: moneyManager.filteredSixMonths)
-                                            isShowingComparisonView.toggle()
+                        NavigationLink(destination: ExpenseComparisonView(moneyManager: moneyManager, dateManager: dateManager, categoryManager: categoryManager), isActive: $isShowingComparisonView) {
+                            HStack {
+                                Button("See more info", action: {
+                                    isShowingComparisonView.toggle()
                                 })
-                            }
-                            .foregroundColor(Color.white)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(Color.gray)
-                        }.frame(height: 35)
-                            .padding(.horizontal)
-                        
+                                .foregroundColor(Color.white)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .foregroundColor(Color.gray)
+                            }.padding(.horizontal)
+                                .padding(.bottom, 10)
+                                .padding(.top, 1)
+                        }
                     }.background {
                         RoundedRectangle(cornerRadius: 15)
                             .fill(secondaryColor)
@@ -122,32 +115,39 @@ struct ExpenseInfoView: View {
                         .padding(.leading, 9)
                     Spacer()
                 }
-                ScrollView {
-                    ForEach(moneyManager.getAggregatedDays(dateManager: dateManager).sorted(by: { $0.day > $1.day } )) { day in
-                        HStack {
-                            Text("\(day.day) \(Calendar.current.shortMonthSymbols[dateManager.selectedMonth-1])")
-                                .foregroundColor(.gray)
-                                .padding(.leading, 11)
-                            Spacer()
-                        }.padding(.bottom, -3)
-                        VStack(spacing: 0) {
-                            ForEach(moneyManager.getCurrentDayExpenses(dateManager: dateManager, day: day.day), id: \.id) { transaction in
-                                HStack(alignment: .center) {
-                                    Text("\(transaction.description)")
-                                    Spacer()
-                                    Text("- \(transaction.amount, specifier: "%.2f") EUR")
-                                        .foregroundColor(.red)
-                                        .padding(.trailing)
-                                }.padding(.vertical, 12)
-                                    .padding(.leading)
-                                if transaction != moneyManager.getCurrentDayExpenses(dateManager: dateManager, day: day.day).last {
-                                    Divider()
+                if moneyManager.getAggregatedDays(dateManager: dateManager).isEmpty {
+                    Text("No expenses added yet!")
+                        .foregroundStyle(.gray)
+                        .padding(.top, 20)
+                    Spacer()
+                } else {
+                    ScrollView {
+                        ForEach(moneyManager.getAggregatedDays(dateManager: dateManager).sorted(by: { $0.day > $1.day } )) { day in
+                            HStack {
+                                Text("\(day.day) \(Calendar.current.shortMonthSymbols[dateManager.selectedMonth-1])")
+                                    .foregroundColor(.gray)
+                                    .padding(.leading, 11)
+                                Spacer()
+                            }.padding(.bottom, -3)
+                            VStack(spacing: 0) {
+                                ForEach(moneyManager.getCurrentDayExpenses(dateManager: dateManager, day: day.day), id: \.id) { transaction in
+                                    HStack(alignment: .center) {
+                                        Text("\(transaction.description)")
+                                        Spacer()
+                                        Text("- \(transaction.amount, specifier: "%.2f") EUR")
+                                            .foregroundColor(.red)
+                                            .padding(.trailing)
+                                    }.padding(.vertical, 12)
+                                        .padding(.leading)
+                                    if transaction != moneyManager.getCurrentDayExpenses(dateManager: dateManager, day: day.day).last {
+                                        Divider()
+                                    }
                                 }
-                            }
-                        }.background {
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color(.secondarySystemBackground))
-                        }.padding(.bottom, 5)
+                            }.background {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color(.secondarySystemBackground))
+                            }.padding(.bottom, 5)
+                        }
                     }
                 }
             }.padding()

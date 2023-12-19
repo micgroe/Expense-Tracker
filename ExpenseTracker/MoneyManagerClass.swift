@@ -7,6 +7,7 @@
 
 import Foundation
 import Charts
+import MongoSwift
 
 class MoneyManager: ObservableObject {
     @Published var transactions: [Transaction] = []
@@ -39,7 +40,6 @@ class MoneyManager: ObservableObject {
     @Published var filteredSixMonths: [Transaction] = []
     
     init() {
-        // Load transactions from UserDefaults when initializing the manager
         loadAllTransactions()
     }
     
@@ -72,6 +72,14 @@ class MoneyManager: ObservableObject {
     }
     
     func getCurrentMonthExpenses(dateManager: DateManager) -> [Transaction] {
+        let currentMonthExpenses = transactions.filter { transaction in
+            let transactionComponents = Calendar.current.dateComponents([.year, .month], from: transaction.date)
+            return transactionComponents.year == dateManager.selectedYear && transactionComponents.month == dateManager.selectedMonth
+        }
+        return currentMonthExpenses
+    }
+    
+    func getSelectedMonthExpenses(dateManager: DateManager) -> [Transaction] {
         let currentMonthExpenses = transactions.filter { transaction in
             let transactionComponents = Calendar.current.dateComponents([.year, .month], from: transaction.date)
             return transactionComponents.year == dateManager.selectedYear && transactionComponents.month == dateManager.selectedMonth
@@ -115,18 +123,19 @@ class MoneyManager: ObservableObject {
     func getAggregatedMonths(months: Int, dateManager: DateManager) -> [Bar] {
         var aggregatedTransactions: [Int: Double] = [:]
         let calendar = Calendar.current
-        var currentMonth = dateManager.currentMonth
+        var selectedMonth = dateManager.selectedMonth
+        var selectedYear = dateManager.selectedYear
         
         for _ in 1...months {
             let currentExpenses = transactions.filter { transaction in
                 let componentMonth = calendar.component(.month, from: transaction.date)
-                return componentMonth == currentMonth
+                return componentMonth == selectedMonth
             }
             for transaction in currentExpenses {
                 let month = calendar.component(.month, from: transaction.date)
                 aggregatedTransactions[month, default: 0] += transaction.amount
             }
-            currentMonth -= 1
+            dateManager.updateSelectedMonth(operation: "Sub")
         }
         
         var result = aggregatedTransactions.map { (day, totalAmount) in
@@ -134,6 +143,30 @@ class MoneyManager: ObservableObject {
         }
         
         result = result.sorted { $0.day < $1.day }
+        return result
+    }
+    
+    func getCategoryComparisonBars(dateManager: DateManager) -> [CategoryComparisonBar] {
+        let filteredExpenses = getSelectedMonthExpenses(dateManager: dateManager)
+        
+        var categorySums: [String: Double] = [:]
+        
+        for expense in filteredExpenses {
+            if let currentSum = categorySums[expense.category!] {
+                categorySums[expense.category!] = currentSum + expense.amount
+            } else {
+                categorySums[expense.category!] = expense.amount
+            }
+        }
+        let categorySumArray = categorySums.map { category, sum in
+            (category: category, sum: sum)
+        }
+        
+        var result = categorySumArray.map { (category, totalAmount) in
+            return CategoryComparisonBar(category: category, amount: totalAmount)
+        }
+        
+        result = result.sorted { $0.amount > $1.amount }
         return result
     }
     
@@ -476,6 +509,11 @@ struct Transaction: Hashable, Identifiable, Codable, Equatable {
     let description: String
     let icon: String?
     let type: String
+}
+
+struct CategoryComparisonBar {
+    let category: String
+    let amount: Double
 }
 
 struct CategoryTotal: Identifiable {

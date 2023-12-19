@@ -72,7 +72,7 @@ struct AddExpenseView: View {
             }.frame(height: 430)
             if let category = selectedItem {
                     let maxLimit = categoryManager.categoryLimits[category] ?? 0
-                    let currentLimit = categoryManager.categorySums[category] ?? 0
+                    let currentLimit = categoryManager.getCurrentMonthCategorySum(moneyManager: moneyManager, category: category)
                     let currentExpense = Double(amount) ?? 0
                     let remainingLimit = categoryManager.getRemainingLimit(maxLimit: maxLimit, currentLimit: currentLimit)
 
