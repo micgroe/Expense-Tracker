@@ -7,13 +7,16 @@
 
 import Foundation
 import Charts
-import MongoSwift
+import RealmSwift
 
 class MoneyManager: ObservableObject {
+//    let configurations = realmApp.currentUser?.flexibleSyncConfiguration()
+//    
+//    @ObservedResults(Expense.self) var expenses
+    
     @Published var transactions: [Transaction] = []
     @Published var monthlyTransactions: [Transaction] = []
 
-    @Published var expenses: [Transaction] = []
     @Published var monthlyExpenses: [Transaction] = []
     @Published var monthlyExpenseSum: Double = 0.0
     
@@ -48,6 +51,27 @@ class MoneyManager: ObservableObject {
         categoryManager.addCategorySum(name: transaction.category!, amount: transaction.amount) //TODO: force unwrap transaction.category should be able to be removed later
         saveAllTransactions()
     }
+    
+//    func addExpenseDB(amount: Double, category: String, descriptions: String) {
+//        let expense = Expense(amount: amount, date: Date(), category: category, descriptions: descriptions)
+//        $expenses.append(expense)
+//        print(expenses)
+//    }
+    
+//    func addExpenseDBTest(amount: Double, category: String, descriptions: String) {
+//        let realm = try! Realm()
+//        let expense = Expense(amount: amount, date: Date(), category: category, descriptions: descriptions)
+//        
+//        do {
+//            try realm.write {
+//                realm.add(expense)
+//            } 
+//            print("Added")
+//        } catch {
+//            print("Error")
+//        }
+//    }
+    
     
     func removeTransaction(at Index: Int) {
         transactions.remove(at: Index)

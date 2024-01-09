@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0607078E2AB67F9F00127E1C /* DateManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0607078D2AB67F9F00127E1C /* DateManagerClass.swift */; };
+		061E603E2B3704E70040C74D /* TestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061E603D2B3704E70040C74D /* TestManager.swift */; };
+		061E60402B3B3C9B0040C74D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061E603F2B3B3C9B0040C74D /* LoginView.swift */; };
 		0636FAE52ABA51BD00745795 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0636FAE42ABA51BD00745795 /* Tests.swift */; };
 		0636FAE72ABB24F000745795 /* AddIncomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0636FAE62ABB24F000745795 /* AddIncomeView.swift */; };
 		0636FAE92ABB5F8800745795 /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0636FAE82ABB5F8800745795 /* BarChartView.swift */; };
@@ -31,6 +33,9 @@
 		06A281E42B04F7EB00F1F151 /* DebtInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A281E32B04F7EB00F1F151 /* DebtInfoView.swift */; };
 		06A281E62B04F86200F1F151 /* DebtManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A281E52B04F86200F1F151 /* DebtManagerClass.swift */; };
 		06A281E82B04FD8D00F1F151 /* AddDebtView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A281E72B04FD8D00F1F151 /* AddDebtView.swift */; };
+		06B2213C2B32108400EF945F /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 06B2213B2B32108400EF945F /* Realm */; };
+		06B2213E2B32108400EF945F /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 06B2213D2B32108400EF945F /* RealmSwift */; };
+		06B221412B32220900EF945F /* ExpenseObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B221402B32220900EF945F /* ExpenseObject.swift */; };
 		06C7D5CB2AC07DB10083F83E /* ExpenseComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C7D5CA2AC07DB10083F83E /* ExpenseComparisonView.swift */; };
 		06D9A5552AC6264300DA8921 /* ComparisonBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D9A5542AC6264300DA8921 /* ComparisonBarChartView.swift */; };
 		06D9A5572ACC53DB00DA8921 /* MonthlyPaymentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D9A5562ACC53DB00DA8921 /* MonthlyPaymentsView.swift */; };
@@ -42,6 +47,8 @@
 
 /* Begin PBXFileReference section */
 		0607078D2AB67F9F00127E1C /* DateManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManagerClass.swift; sourceTree = "<group>"; };
+		061E603D2B3704E70040C74D /* TestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestManager.swift; sourceTree = "<group>"; };
+		061E603F2B3B3C9B0040C74D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		0636FAE42ABA51BD00745795 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		0636FAE62ABB24F000745795 /* AddIncomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddIncomeView.swift; sourceTree = "<group>"; };
 		0636FAE82ABB5F8800745795 /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
@@ -67,6 +74,7 @@
 		06A281E32B04F7EB00F1F151 /* DebtInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebtInfoView.swift; sourceTree = "<group>"; };
 		06A281E52B04F86200F1F151 /* DebtManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebtManagerClass.swift; sourceTree = "<group>"; };
 		06A281E72B04FD8D00F1F151 /* AddDebtView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDebtView.swift; sourceTree = "<group>"; };
+		06B221402B32220900EF945F /* ExpenseObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseObject.swift; sourceTree = "<group>"; };
 		06C7D5CA2AC07DB10083F83E /* ExpenseComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseComparisonView.swift; sourceTree = "<group>"; };
 		06D9A5542AC6264300DA8921 /* ComparisonBarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComparisonBarChartView.swift; sourceTree = "<group>"; };
 		06D9A5562ACC53DB00DA8921 /* MonthlyPaymentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyPaymentsView.swift; sourceTree = "<group>"; };
@@ -81,6 +89,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06B2213E2B32108400EF945F /* RealmSwift in Frameworks */,
+				06B2213C2B32108400EF945F /* Realm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				0636FAE42ABA51BD00745795 /* Tests.swift */,
+				06B2213F2B3221EA00EF945F /* Objects */,
 				0640C2722AAD3E8F0090A525 /* ExpenseTracker */,
 				0640C2712AAD3E8F0090A525 /* Products */,
 			);
@@ -112,6 +123,7 @@
 				0636FAE82ABB5F8800745795 /* BarChartView.swift */,
 				0640C2752AAD3E8F0090A525 /* SceneDelegate.swift */,
 				0640C2772AAD3E8F0090A525 /* ContentView.swift */,
+				061E603F2B3B3C9B0040C74D /* LoginView.swift */,
 				0676EA812B1CD4A900DD7A32 /* Income */,
 				0676EA7E2B1CD3F900DD7A32 /* Expenses */,
 				0676EA7F2B1CD43B00DD7A32 /* Debts */,
@@ -144,6 +156,7 @@
 				0636FAEA2ABB8EE400745795 /* ExpenseInfoView.swift */,
 				0640C28E2AAE22840090A525 /* AddExpenseView.swift */,
 				06E666242AAF85AB00434EE4 /* MoneyManagerClass.swift */,
+				061E603D2B3704E70040C74D /* TestManager.swift */,
 				06C7D5CA2AC07DB10083F83E /* ExpenseComparisonView.swift */,
 			);
 			name = Expenses;
@@ -182,6 +195,14 @@
 			name = Income;
 			sourceTree = "<group>";
 		};
+		06B2213F2B3221EA00EF945F /* Objects */ = {
+			isa = PBXGroup;
+			children = (
+				06B221402B32220900EF945F /* ExpenseObject.swift */,
+			);
+			path = Objects;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -198,6 +219,10 @@
 			dependencies = (
 			);
 			name = ExpenseTracker;
+			packageProductDependencies = (
+				06B2213B2B32108400EF945F /* Realm */,
+				06B2213D2B32108400EF945F /* RealmSwift */,
+			);
 			productName = ExpenseTracker;
 			productReference = 0640C2702AAD3E8F0090A525 /* ExpenseTracker.app */;
 			productType = "com.apple.product-type.application";
@@ -226,7 +251,7 @@
 			);
 			mainGroup = 0640C2672AAD3E8F0090A525;
 			packageReferences = (
-				06AA7B502B2E627D00ABF8A8 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				06B2213A2B32108400EF945F /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 0640C2712AAD3E8F0090A525 /* Products */;
 			projectDirPath = "";
@@ -274,11 +299,14 @@
 				0676EA832B1DFC8500DD7A32 /* LimitBarChart.swift in Sources */,
 				0640C2892AADE48F0090A525 /* PieSliceView.swift in Sources */,
 				06FAF9082B24013900D0F70B /* LimitEditView.swift in Sources */,
+				061E603E2B3704E70040C74D /* TestManager.swift in Sources */,
 				06FAF9062B23CB4C00D0F70B /* CategoryInfoView.swift in Sources */,
 				06A281E42B04F7EB00F1F151 /* DebtInfoView.swift in Sources */,
+				061E60402B3B3C9B0040C74D /* LoginView.swift in Sources */,
 				0676EA7B2B1A635F00DD7A32 /* AddLimitView.swift in Sources */,
 				06D9A5572ACC53DB00DA8921 /* MonthlyPaymentsView.swift in Sources */,
 				0640C2782AAD3E8F0090A525 /* ContentView.swift in Sources */,
+				06B221412B32220900EF945F /* ExpenseObject.swift in Sources */,
 				06E666252AAF85AB00434EE4 /* MoneyManagerClass.swift in Sources */,
 				0636FAE72ABB24F000745795 /* AddIncomeView.swift in Sources */,
 				0636FAE92ABB5F8800745795 /* BarChartView.swift in Sources */,
@@ -484,15 +512,28 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		06AA7B502B2E627D00ABF8A8 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+		06B2213A2B32108400EF945F /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				branch = master;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		06B2213B2B32108400EF945F /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 06B2213A2B32108400EF945F /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		06B2213D2B32108400EF945F /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 06B2213A2B32108400EF945F /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0640C2682AAD3E8F0090A525 /* Project object */;
 }

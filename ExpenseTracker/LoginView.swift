@@ -8,8 +8,32 @@
 import SwiftUI
 
 struct LoginView: View {
+    @State var username: String = ""
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            if username == "" {
+                ProgressView()
+            } else {
+                ContentView(username: username)
+            }
+        }
+        .onAppear {
+            login()
+        }
+    }
+
+    
+    private func login() {
+        Task {
+            do {
+                let user = try await realmApp.login(credentials: .anonymous)
+                username = user.id
+                print(user.id)
+            } catch {
+                print("Error")
+            }
+        }
     }
 }
 

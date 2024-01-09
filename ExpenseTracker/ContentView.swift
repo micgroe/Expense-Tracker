@@ -6,21 +6,29 @@
 //
 
 import SwiftUI
+import RealmSwift
+
+let realmApp = RealmSwift.App(id: "devicesync-nflia")
 
 struct ContentView: View {
+    
     @ObservedObject var moneyManager = MoneyManager()
     @ObservedObject var dateManager = DateManager()
     @ObservedObject var debtManager = DebtManager()
     @ObservedObject var incomeManager = IncomeManager()
     @ObservedObject var categoryManager = CategoryManager()
     @ObservedObject var monthlyPaymentManager = MonthlyPaymentManager()
+//    @ObservedObject var testManager = TestManager()
     
+    @ObservedResults(Expense.self) var expenses
+    
+    @State var realm: Realm?
     let colors = [Color.green, Color.red, Color.yellow, Color.blue, Color.orange, Color.black, Color.pink]
     let backgroundColor = Color(.systemBackground)
     let secondaryColor = Color(.secondarySystemBackground)
     let tertiaryColor = Color(.tertiarySystemBackground)
     
-    
+    @State var username: String
     @State private var showingAddTransactionSheet = false
     @State private var showingAddDebtSheet = false
     @State private var showingAddIncomeSheet = false
@@ -83,8 +91,8 @@ struct ContentView: View {
                             if !categoryManager.categoryLimits.isEmpty {
                                 ScrollView {
                                     ForEach(categoryManager.categoryLimits.sorted(by: { $0.key < $1.key }), id: \.key) { (category, limit) in
-//                                    ForEach(categoryManager.categoryLimits.sortedKeysAndValues(by: { ($0.value - categoryManager.categorySums[$0.key]) < ($1.value - categoryManager.categorySums[$1.key]) }), id: \.key) { (category, limit) in
-//                             TODO: Sort by remaining limit
+                                        //                                    ForEach(categoryManager.categoryLimits.sortedKeysAndValues(by: { ($0.value - categoryManager.categorySums[$0.key]) < ($1.value - categoryManager.categorySums[$1.key]) }), id: \.key) { (category, limit) in
+                                        //                             TODO: Sort by remaining limit
                                         CategoryLimitView(categoryManager: categoryManager, moneyManager: moneyManager, category: category, screenWidth: screenWidth)
                                     }
                                 }
@@ -100,18 +108,21 @@ struct ContentView: View {
                             }
                             Spacer()
                         }.frame(height: 160)
-                        .padding(.leading)
-                        .padding(.top)
-                        .background {
-                            RoundedRectangle(cornerRadius: 15)
-                                .fill(secondaryColor)
-                        }
+                            .padding(.leading)
+                            .padding(.top)
+                            .background {
+                                RoundedRectangle(cornerRadius: 15)
+                                    .fill(secondaryColor)
+                            }
                         Spacer()
                     }
                     ZStack {
                         VStack {
                             Spacer()
-                            HStack{
+                            HStack {
+                                Button("Test") {
+                                    print(expenses)
+                                }
                                 Spacer()
                                 Menu {
                                     Button(action: {
@@ -162,19 +173,14 @@ struct ContentView: View {
                         monthlyPaymentManager.addTransaction(monthlyPayment: payment, moneyManager: moneyManager, categoryManager: categoryManager)
                     }
                 }
-                moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "Expense")
-                moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyExpenses, transactionType: "Expense")
-                moneyManager.updateMonthlyTransactions(selectedMonth: dateManager.currentMonth, selectedYear: dateManager.currentYear, transactionType: "Income")
-                moneyManager.updateMonthlyTransactionSum(monthlyTransactions: moneyManager.monthlyExpenses, transactionType: "Income")
-                moneyManager.updateDebts()
                 moneyManager.updateDebtAmount()
                 moneyManager.updateCredits()
                 moneyManager.updateCreditAmount()
             }
             .sheet(isPresented: $showingAddTransactionSheet, content: {
                 NavigationView {
-                    AddExpenseView(moneyManager: moneyManager, dateManager: dateManager, categoryManager: categoryManager, selectedOption: selectedOption)
-                }
+                    AddExpenseView(moneyManager: moneyManager, dateManager: dateManager, categoryManager: categoryManager, selectedOption: selectedOption, username: username)
+                }.environment(\.realmConfiguration, (realmApp.currentUser?.flexibleSyncConfiguration())!)
             })
             .sheet(isPresented: $showingAddIncomeSheet, content: {
                 NavigationView {
@@ -191,9 +197,39 @@ struct ContentView: View {
                     AddDebtView(moneyManager: moneyManager, dateManager: dateManager, debtManager: debtManager)
                 }
             })
+        }.onAppear {
+            setupRealm()
+            subscribe()
         }
     }
+    private func setupRealm() {
+        if let user = realmApp.currentUser {
+            Realm.Configuration.defaultConfiguration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+            
+            let config = user.flexibleSyncConfiguration()
+            realm = try? Realm(configuration: config)
+        }
+    }
+    
+    private func subscribe() {
+        let subscriptions = realm!.subscriptions
+        if subscriptions.first(named: "Expenses") == nil {
+            subscriptions.update {
+                subscriptions.append(QuerySubscription<Expense>(name: "Expenses") {
+                    $0.userID == username
+                })
+                
+            }
+        }
+        if username != "" {
+            print(username)
+        } else {
+            print("No username yet")
+        }
+        print(realm?.objects(Expense.self))
+    }
 }
+
 
 struct RectView: View {
     var backgroundColor: Color
@@ -296,11 +332,5 @@ struct CategoryLimitView: View {
                     .foregroundColor(.gray)
             }
         }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
     }
 }

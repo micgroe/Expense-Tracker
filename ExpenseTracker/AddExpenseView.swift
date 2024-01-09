@@ -6,8 +6,26 @@
 //
 
 import SwiftUI
+import RealmSwift
 
 struct AddExpenseView: View {
+//    @ObservedResults(Expense.self) var expenses
+    
+    private func subscribe() {
+        let subscriptions = realm.subscriptions
+        if subscriptions.first(named: "Expenses") == nil {
+            subscriptions.update {
+                subscriptions.append(QuerySubscription<Expense>(name: "Expenses"))
+            }
+        }
+    }
+    
+//    @ObservedObject var testManager: TestManager
+    
+    private func unsubscribe() {
+        let subscriptions = realm.subscriptions
+        subscriptions.remove(named: "Expenses")
+    }
     
     private func convertCommaToPeriod(_ input: String) -> String {
         return input.replacingOccurrences(of: ",", with: ".")
@@ -25,11 +43,14 @@ struct AddExpenseView: View {
     ]
     let itemsPerRow = 4
     
+//    @ObservedObject var testManager: TestManager
     @ObservedObject var moneyManager: MoneyManager
     @ObservedObject var dateManager: DateManager
     @ObservedObject var categoryManager: CategoryManager
     
     var selectedOption: String?
+    
+    let username: String
     
     @State private var amount = ""
     @State private var description = ""
@@ -39,6 +60,7 @@ struct AddExpenseView: View {
     @State private var selectedItemIcon: String? = nil
     
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.realm) var realm
     
     var body: some View {
         VStack {
@@ -117,13 +139,18 @@ struct AddExpenseView: View {
                 }
             }
             Spacer()
-        }.navigationTitle("Add \(selectedOption ?? "")")
+        }.onAppear {
+//            subscribe()
+        }.onDisappear() {
+//            unsubscribe()
+        }
+        .navigationTitle("Add \(selectedOption ?? "")")
             .navigationBarItems(
                 leading: Button("Cancel") {
                     presentationMode.wrappedValue.dismiss()
                 },
                 trailing: Button("Add") {
-                    if let addAmount = Double(convertCommaToPeriod(amount)) {
+                    if let addAmount = Double(convertCommaToPeriod(amount)), let addCategory = selectedItem {
                         moneyManager.addTransaction(Transaction(
                                                     amount: addAmount,
                                                     date: date,
@@ -131,17 +158,9 @@ struct AddExpenseView: View {
                                                     description: description,
                                                     icon: selectedItemIcon ?? "Other",
                                                     type: selectedOption!), categoryManager: categoryManager)
-                        moneyManager.updateMonthlyTransactions(
-                        selectedMonth: dateManager.currentMonth,
-                        selectedYear: dateManager.currentYear,
-                        transactionType: selectedOption!
-                    )
-                    moneyManager.updateCategoryBalancesForMonth()
-                    moneyManager.updateMonthlyTransactionSum(
-                        monthlyTransactions: moneyManager.monthlyExpenses, transactionType: selectedOption!
-                        
-                    )
-                    moneyManager.updateDebtAmount()
+//                        moneyManager.addExpenseDB(amount: addAmount, category: addCategory, descriptions: description)
+//                        $expenses.append(Expense(amount: addAmount, date: Date(), category: addCategory, descriptions: description))
+//                        testManager.addExpense(expense: Expense(userID: username, amount: addAmount, date: date, category: addCategory, descriptions: description))
 
                     amount = ""
                     presentationMode.wrappedValue.dismiss()
@@ -149,11 +168,5 @@ struct AddExpenseView: View {
 
                 
             }.disabled(selectedItemIcon==nil))
-    }
-}
-
-struct AddExpenseView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddExpenseView(moneyManager: MoneyManager(), dateManager: DateManager(), categoryManager: CategoryManager(), selectedOption: "Debt")
     }
 }
